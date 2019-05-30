@@ -12,6 +12,7 @@ def init():
 
     db.create_tables([Event, User, Message, Score, Bot])
 
-    Bot(name="1337").save()
+    if Bot.select().count() <= 0:
+        Bot(name="1337").save()
 
     print("DB ready!")
