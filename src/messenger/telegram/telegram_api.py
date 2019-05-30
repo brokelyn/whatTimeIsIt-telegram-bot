@@ -8,6 +8,7 @@ from src.entity.user import User
 from src.messenger.messenger_api import MessengerApi
 from src.repo.bot_repo import BotRepo
 
+# todo renew token
 bot_token = "836568720:AAHCvDJ3qLaausxazb5BVlWfKIBsaVadIZc"
 
 
