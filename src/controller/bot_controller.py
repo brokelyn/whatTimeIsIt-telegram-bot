@@ -48,16 +48,17 @@ class BotController:
 
     @staticmethod
     def help(update, context):  # todo html correct parsing
-        help_page = "<b> This is the Help </b>\n" \
-                    "- '/help' to show this help\n" \
-                    "- '/stats <time>' to show stats for time\n" \
-                    "- '/events' to show all daily posted stats\n" \
-                    "- '/addEvent <time>' to add an event at time\n" \
-                    "- '/removeEvent <time>' to remove the event at time\n" \
-                    "- '/removeAllEvents' to remove all active events\n" \
-                    "\n All text messages will be saved for analysing the scores. By participating" \
-                    "in this group you accept this condition."
+        help_page = "*WhatTimeIsIt Bot Help Page*\n\n"
+        help_page += "-'/help' to show this help\n"
+        help_page += "-'/stats <time>' to show stats for time\n"
+        help_page += "-'/events' to show all daily posted stats\n"
+        help_page += "-'/addEvent <time>' to add an event at time\n"
+        help_page += "-'/removeEvent <time>' to remove the event at time\n"
+        help_page += "-'/removeAllEvents' to remove all active events\n\n"
+        help_page += "All text messages will be saved for analysing the scores. By participating"
+        help_page += "in this group you accept this condition.\n\n"
+        help_page += "Check out the [Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot) framework"
 
         context.bot.send_message(chat_id=update.message.chat_id, text=help_page,
-                                 reply_markup=telegram.ReplyKeyboardRemove())  # ,
-        # parse_mode=telegram.ParseMode.HTML)
+                                 reply_markup=telegram.ReplyKeyboardRemove(),
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
