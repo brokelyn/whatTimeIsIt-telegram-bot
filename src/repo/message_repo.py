@@ -5,7 +5,7 @@ class MessageRepo:
 
     @staticmethod
     def save(msg: Message):
-        msg.save()
+        msg.save(force_insert=True)
 
     @staticmethod
     def findAll():
