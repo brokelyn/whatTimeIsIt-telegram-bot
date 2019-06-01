@@ -25,20 +25,30 @@ according to those messages.
 ### Database
 
 We use the database SQLite and the ORM peewee because both are lightweight and easy to understand.
-.....
+This database is used to persist all incoming *Text Messages* and later
+save the scores for the different times. 
 
 
 ## Getting started
 
-...
+You need to install `peewee` lib for python as we use it for our database.
+
+In order to use the telegram-bot framework you need to execute `python3 setup.py install`
+in the telegram-bot home directory.
+
+Then you should be able to start the application by calling `python3 main.py`
+in the src folder of the project.
 
 
-## Different Messenger
+## Telegram
 
-Due to an interface for a messenger api we cann support different messenger.
-You only need to supply a implementation of your messenger using our interface.
+### Why Telegram
 
-### Telegram 
+Telegram has a lot gerat features and one of the best is the API which allows
+developer to create their own bots for different kinds of usage.
 
-The default messenger will be Telegram because it provides an easy API and a lot possibilities like polls and reply
-function.
+### Telegram-Bot
+
+In this project we are using a framework from github which implements
+the telegram api. Thanks for this awesome framework!
+Link to them https://github.com/python-telegram-bot/python-telegram-bot
