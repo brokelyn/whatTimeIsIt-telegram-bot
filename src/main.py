@@ -1,8 +1,6 @@
 import src.database
-from src.controller.main_controller import MainController
+from src.controller.bot_controller import BotController
 
 src.database.init()
 
-main_controller = MainController()
-
-main_controller.start_listening(timeout=3)
+main_controller = BotController()
