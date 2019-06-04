@@ -1,9 +1,9 @@
-from src.entity.score import Score
-from src.entity.user import User
-from src.entity.statistic import Statistic
-from src.repo.score_repo import ScoreRepo
-from src.repo.message_repo import MessageRepo
-from src.repo.statistic_repo import StatisticRepo
+from entity.score import Score
+from entity.user import User
+from entity.statistic import Statistic
+from repo.score_repo import ScoreRepo
+from repo.message_repo import MessageRepo
+from repo.statistic_repo import StatisticRepo
 import collections
 from datetime import datetime
 

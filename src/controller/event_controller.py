@@ -2,10 +2,10 @@ import telegram
 from telegram import InlineKeyboardMarkup
 import datetime
 
-from src.controller.base_controller import send_typing_action
-from src.controller.statistic_controller import StatisticController
-from src.service.time_service import TimeService
-from src.service.event_service import EventService
+from controller.base_controller import send_typing_action
+from controller.statistic_controller import StatisticController
+from service.time_service import TimeService
+from service.event_service import EventService
 
 
 

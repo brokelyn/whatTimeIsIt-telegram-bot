@@ -1,10 +1,10 @@
 from functools import wraps
 
-from src.entity.message import Message
-from src.entity.user import User
-from src.repo.message_repo import MessageRepo
-from src.repo.user_repo import UserRepo
-from src.service.time_service import TimeService
+from entity.message import Message
+from entity.user import User
+from repo.message_repo import MessageRepo
+from repo.user_repo import UserRepo
+from service.time_service import TimeService
 
 
 def send_typing_action(func):

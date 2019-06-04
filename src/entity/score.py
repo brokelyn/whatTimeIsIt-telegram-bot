@@ -1,8 +1,8 @@
 import peewee
 
-from src.entity.base_entity import BaseEntity
-from src.entity.user import User
-from src.entity.statistic import Statistic
+from entity.base_entity import BaseEntity
+from entity.user import User
+from entity.statistic import Statistic
 
 
 class Score(BaseEntity):
