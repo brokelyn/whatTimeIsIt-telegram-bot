@@ -1,6 +1,8 @@
 import telegram
 
 from src.controller.base_controller import send_typing_action
+from src.repo.statistic_repo import StatisticRepo
+from src.service.statistic_service import StatisticService
 
 
 class StatisticController:
@@ -18,7 +20,8 @@ class StatisticController:
                                          text="Please enter a valid time")
                 return
             if 0 < time < 2359:
-                StatisticController.stats_to_time(update, context, time)
+                StatisticController.stats_to_time(update.message.chat_id,
+                                                  context.bot, time)
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text="Time to big or small")
@@ -32,11 +35,11 @@ class StatisticController:
 
     @staticmethod
     def stats_to_time(chat_id, bot, time: int):
-        # todo
-        # scoreboard = ScoreboardRepo.get_scoreboard(time)
-        # board = StatisticService.extract_scores(scoreboard)
-        # board = StatisticService.html_presentation(board)
-        bot.send_message(chat_id=chat_id, text="Stats to:" + str(time),
+        statistic = StatisticRepo.get_or_create(time)
+        StatisticService.calc_stats(statistic)
+        dict = StatisticService.extract_scores(statistic)
+        board_text = StatisticService.html_presentation(dict, statistic.time)
+        bot.send_message(chat_id=chat_id, text=board_text, parse_mode="HTML",
                          reply_markup=telegram.ReplyKeyboardRemove())
 
     @staticmethod
