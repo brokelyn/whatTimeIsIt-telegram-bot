@@ -9,4 +9,4 @@ class Message(BaseEntity):
     text = peewee.TextField()
     chat_id = peewee.IntegerField(null=False)
     user = peewee.ForeignKeyField(model=User)
-    time = peewee.TimestampField()
+    time = peewee.DateTimeField(null=False)
