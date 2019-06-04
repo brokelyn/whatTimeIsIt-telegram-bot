@@ -4,11 +4,19 @@ from src.entity.user import User
 class UserRepo:
 
     @staticmethod
-    def save(user: User):
+    def create(user: User):
         user.save(force_insert=True)
 
     @staticmethod
-    def save_if_not_exist(user: User):
+    def save(user: User):
+        user.save()
+
+    @staticmethod
+    def create_if_not_exist(user: User):
         query = User.select().where(User.username == user.username)
         if not query.exists():
-            UserRepo.save(user)
+            UserRepo.create(user)
+
+    @staticmethod
+    def get_or_none(id: int) -> User:
+        return User.get_or_none(User.id == id)
