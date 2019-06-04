@@ -1,3 +1,0 @@
-[submodule "src/telegrambot"]
-	path = src/telegrambot
-	url = git@github.com:python-telegram-bot/python-telegram-bot.git
