@@ -1,4 +1,4 @@
-#What Time Is It - 1337
+# What Time Is It - 1337
 
 It is a game played in a messanger service of you choice in a group.
 The goal is to write `1337` at the time 13:37. If you do so, you get one point.
