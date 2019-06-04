@@ -15,5 +15,17 @@ class ScoreRepo:
         score.save()
 
     @staticmethod
-    def scores_to_scoreboard(scoreboard: Statistic) -> List[Score]:
-        return list(Score.select().where(Score.board == scoreboard))
+    def create(score: Score):
+        score.save(force_insert=True)
+
+    @staticmethod
+    def scores_to_stat(stat: Statistic) -> List[Score]:
+        return list(Score.select().where(Score.stat == stat))
+
+    @staticmethod
+    def save_or_create(score: Score):
+        score = Score.select().where(Score.id == score.id)
+        if not score:
+            ScoreRepo.create(score)
+        else:
+            ScoreRepo.save()

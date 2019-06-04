@@ -1,12 +1,22 @@
 from src.entity.message import Message
 
+from typing import List
+
 
 class MessageRepo:
 
     @staticmethod
-    def save(msg: Message):
+    def create(msg: Message):
         msg.save(force_insert=True)
+
+    @staticmethod
+    def save(msg: Message):
+        msg.save()
 
     @staticmethod
     def findAll():
         return list(Message.select())
+
+    @staticmethod
+    def findByMsgIdIsGreater(id: int) -> List[Message]:
+        return list(Message.select().where(Message.msg_id > id))
