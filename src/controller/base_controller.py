@@ -23,10 +23,10 @@ def persist_message(update, context):
     user = User(id=sender.id, username=sender.username,
                 first_name=sender.first_name,
                 last_name=sender.last_name)
-    UserRepo.save_if_not_exist(user)
+    UserRepo.create_if_not_exist(user)
 
     msg = update.message
     message = Message(user=user.id, msg_id=msg.message_id,
                       text=msg.text, chat_id=msg.chat.id,
                       time=msg.date)
-    MessageRepo.save(message)
+    MessageRepo.create(message)

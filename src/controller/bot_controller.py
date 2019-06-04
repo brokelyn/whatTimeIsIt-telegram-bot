@@ -1,10 +1,9 @@
 import telegram
 from telegram.ext import CommandHandler, Updater, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-from src.controller.statistic_controller import StatisticController
 from src.controller.event_controller import EventController
+from src.controller.statistic_controller import StatisticController
 from src.controller.base_controller import persist_message
 
 
