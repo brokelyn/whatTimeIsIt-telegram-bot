@@ -1,8 +1,8 @@
 import telegram
 
-from src.controller.base_controller import send_typing_action
-from src.repo.statistic_repo import StatisticRepo
-from src.service.statistic_service import StatisticService
+from controller.base_controller import send_typing_action
+from repo.statistic_repo import StatisticRepo
+from service.statistic_service import StatisticService
 
 
 class StatisticController:

@@ -1,7 +1,7 @@
-from src.entity.event import Event
-from src.entity.score import Score
-from src.entity.user import User
-from src.repo.score_repo import ScoreRepo
+from entity.event import Event
+from entity.score import Score
+from entity.user import User
+from repo.score_repo import ScoreRepo
 
 
 class ScoreService:

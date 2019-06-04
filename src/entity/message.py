@@ -1,7 +1,7 @@
 import peewee
 
-from src.entity.base_entity import BaseEntity
-from src.entity.user import User
+from entity.base_entity import BaseEntity
+from entity.user import User
 
 
 class Message(BaseEntity):

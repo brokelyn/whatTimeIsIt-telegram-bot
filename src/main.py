@@ -1,5 +1,5 @@
 import database
-from src.controller.bot_controller import BotController
+from controller.bot_controller import BotController
 
 database.init()
 

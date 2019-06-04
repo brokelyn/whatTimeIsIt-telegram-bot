@@ -1,7 +1,7 @@
 import telegram
 from telegram.ext import CommandHandler, Updater
 
-from src.controller.base_controller import send_typing_action
+from controller.base_controller import send_typing_action
 
 
 class ScoreController:

@@ -1,6 +1,6 @@
-from src.entity.score import Score
-from src.entity.user import User
-from src.entity.statistic import Statistic
+from entity.score import Score
+from entity.user import User
+from entity.statistic import Statistic
 from typing import List
 
 

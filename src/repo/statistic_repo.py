@@ -1,4 +1,4 @@
-from src.entity.statistic import Statistic
+from entity.statistic import Statistic
 
 
 class StatisticRepo:

@@ -1,4 +1,4 @@
-from src.entity.message import Message
+from entity.message import Message
 
 from typing import List
 

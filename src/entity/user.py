@@ -1,6 +1,6 @@
 import peewee
 
-from src.entity.base_entity import BaseEntity
+from entity.base_entity import BaseEntity
 
 
 class User(BaseEntity):

@@ -1,4 +1,4 @@
-from src.entity.user import User
+from entity.user import User
 
 
 class UserRepo:
