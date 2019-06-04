@@ -1,6 +1,4 @@
-from src.entity.score import Score
 from src.entity.statistic import Statistic
-from typing import List
 
 
 class StatisticRepo:

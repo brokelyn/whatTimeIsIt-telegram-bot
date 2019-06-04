@@ -1,5 +1,4 @@
 from functools import wraps
-from telegram import ChatAction
 
 from src.entity.message import Message
 from src.entity.user import User

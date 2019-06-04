@@ -1,4 +1,5 @@
-import telegram
+import telegram, os
+import src.settings
 from telegram.ext import CommandHandler, Updater, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
 
@@ -10,8 +11,7 @@ from src.controller.base_controller import handle_text_msg
 class BotController:
 
     def __init__(self):
-        bot_token = "836568720:AAHCvDJ3qLaausxazb5BVlWfKIBsaVadIZc"
-        updater = Updater(token=bot_token, use_context=True)
+        updater = Updater(token=src.settings.TELEGRAM_BOT_API_KEY, use_context=True)
         dispatcher = updater.dispatcher
 
         stat_handler = CommandHandler('stats', StatisticController.stats)
