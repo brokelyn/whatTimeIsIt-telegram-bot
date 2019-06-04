@@ -33,12 +33,22 @@ save the scores for the different times.
 
 You need to install `peewee` lib for python as we use it for our database.
 
-In order to use the telegram-bot framework you need to execute `python3 setup.py install`
-in the telegram-bot home directory.
+### peewee
+
+As ORM we use `peewee`. To install this framework use `pip install peewee`
+
+[Link to peewee docs page](http://docs.peewee-orm.com/en/latest/)
+
+### telegram-bot
+
+We use a gihub repository for the Telegram api. This repo is called `python-telegram-bot`.
+
+To install this one use `pip install python-telegram-bot`.
+
+[Link to github telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
 
 Then you should be able to start the application by calling `python3 main.py`
 in the src folder of the project.
-
 
 ## Telegram
 
