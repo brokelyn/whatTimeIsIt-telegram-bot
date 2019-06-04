@@ -10,7 +10,6 @@ class StatisticController:
     @staticmethod
     # @send_typing_action
     def stats(update, context):
-        print("onncvsocn")
         if len(context.args) <= 0:
             StatisticController.stats_keyboard(update, context)
         else:
@@ -30,11 +29,9 @@ class StatisticController:
     @staticmethod
     def stats_keyboard(update, context):
         custom_keyboard = [['/stats 1337'], ['/stats 1111', '/stats 2222']]
-        print("Hey")
         context.bot.send_message(chat_id=update.message.chat_id,
                                  text="Choose a stat or request a custom by '/stats <4 numbers>'",
                                  reply_markup=telegram.ReplyKeyboardMarkup(custom_keyboard))
-        print("Hey")
 
     @staticmethod
     def stats_to_time(chat_id, bot, time: int):
