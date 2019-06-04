@@ -1,5 +1,5 @@
 import telegram
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardMarkup
 import datetime
 
 from src.controller.base_controller import send_typing_action
@@ -12,7 +12,7 @@ from src.service.event_service import EventService
 class EventController:
 
     @staticmethod
-    @send_typing_action
+    # @send_typing_action
     def add_event(update, context):
         if len(context.args) <= 0:
             EventController.add_keyboard(update, context)
