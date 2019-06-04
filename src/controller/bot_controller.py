@@ -4,7 +4,7 @@ from telegram.ext import MessageHandler, Filters
 
 from src.controller.event_controller import EventController
 from src.controller.statistic_controller import StatisticController
-from src.controller.base_controller import persist_message
+from src.controller.base_controller import handle_text_msg
 
 
 class BotController:
@@ -33,7 +33,7 @@ class BotController:
                                                   pattern='rmv_event')
         dispatcher.add_handler(callback_rmv_event)
 
-        message_handler = MessageHandler(Filters.text, persist_message)
+        message_handler = MessageHandler(Filters.text, handle_text_msg)
         dispatcher.add_handler(message_handler)
 
         # needs to be the last handler

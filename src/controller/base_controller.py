@@ -5,6 +5,7 @@ from src.entity.message import Message
 from src.entity.user import User
 from src.repo.message_repo import MessageRepo
 from src.repo.user_repo import UserRepo
+from src.service.time_service import TimeService
 
 
 def send_typing_action(func):
@@ -18,14 +19,25 @@ def send_typing_action(func):
     return command_func
 
 
-def persist_message(update, context):
-    sender = update.message.from_user
+def handle_text_msg(update, context):
+    time_check(update.message)
+    persist_message(update.message)
+
+
+def time_check(message):
+    if TimeService.is_valid_time(message.text)[0]:
+        msg_datetime = message.date.strftime('%H%M')
+        if not message.text == msg_datetime:
+            message.reply_text("This time post seems wrong...")
+
+
+def persist_message(msg):
+    sender = msg.from_user
     user = User(id=sender.id, username=sender.username,
                 first_name=sender.first_name,
                 last_name=sender.last_name)
     UserRepo.create_if_not_exist(user)
 
-    msg = update.message
     message = Message(user=user.id, msg_id=msg.message_id,
                       text=msg.text, chat_id=msg.chat.id,
                       time=msg.date)
