@@ -1,10 +1,10 @@
-# What Time Is It - 1337
+#What Time Is It - 1337
 
 It is a game played in a messanger service of you choice in a group.
 The goal is to write `1337` at the time 13:37. If you do so, you get one point.
 The member with the most points at the end of the year wins the game.
 
-It is legal to post any other time to the group. If you post the wrong time per example `1337` at 13:38
+It is legal to post any other time to the group. If you post the wrong time as example `1337` at 13:38
 you get kicked out of the group until the next day.
 
 # Messenger Bot
@@ -55,7 +55,8 @@ in the src folder of the project.
 ### Why Telegram
 
 Telegram has a lot gerat features and one of the best is the API which allows
-developer to create their own bots for different kinds of usage.
+developer to create their own bots for different kinds of usage. It is also a lot 
+more secure than other messengers like WhatsApp or Line.
 
 ### Telegram-Bot
 
