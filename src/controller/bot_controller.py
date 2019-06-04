@@ -1,6 +1,7 @@
 import telegram
-from telegram.ext import CommandHandler, Updater
+from telegram.ext import CommandHandler, Updater, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from src.controller.statistic_controller import StatisticController
 from src.controller.event_controller import EventController
@@ -29,8 +30,9 @@ class BotController:
         remove_event_handler = CommandHandler('removeEvent', EventController.remove_event)
         dispatcher.add_handler(remove_event_handler)
 
-        remove_all_events_handler = CommandHandler('removeAllEvents', EventController.remove_all_jobs)
-        dispatcher.add_handler(remove_all_events_handler)
+        callback_rmv_event = CallbackQueryHandler(EventController.rmv_event_callback,
+                                                  pattern='rmv_event')
+        dispatcher.add_handler(callback_rmv_event)
 
         message_handler = MessageHandler(Filters.text, persist_message)
         dispatcher.add_handler(message_handler)
@@ -47,14 +49,13 @@ class BotController:
         update.message.reply_text("Unknown command")
 
     @staticmethod
-    def help(update, context):  # todo html correct parsing
+    def help(update, context):
         help_page = "*WhatTimeIsIt Bot Help Page*\n\n"
         help_page += "-'/help' to show this help\n"
         help_page += "-'/stats <time>' to show stats for time\n"
         help_page += "-'/events' to show all daily posted stats\n"
         help_page += "-'/addEvent <time>' to add an event at time\n"
-        help_page += "-'/removeEvent <time>' to remove the event at time\n"
-        help_page += "-'/removeAllEvents' to remove all active events\n\n"
+        help_page += "-'/removeEvent' to remove a active event\n\n"
         help_page += "All text messages will be saved for analysing the scores. By participating"
         help_page += "in this group you accept this condition.\n\n"
         help_page += "Check out the [Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot) framework"
