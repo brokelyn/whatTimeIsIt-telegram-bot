@@ -1,6 +1,6 @@
-import src.database
+import database
 from src.controller.bot_controller import BotController
 
-src.database.init()
+database.init()
 
 main_controller = BotController()
