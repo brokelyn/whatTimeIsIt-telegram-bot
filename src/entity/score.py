@@ -8,4 +8,5 @@ from src.entity.statistic import Statistic
 class Score(BaseEntity):
     user = peewee.ForeignKeyField(model=User)
     points = peewee.IntegerField(null=False, default=0)
-    board = peewee.ForeignKeyField(model=Statistic, null=False)
+    stat = peewee.ForeignKeyField(model=Statistic, null=False)
+    date = peewee.IntegerField(null=False, default=0)
