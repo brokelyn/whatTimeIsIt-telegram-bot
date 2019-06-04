@@ -1,8 +1,11 @@
 import telegram
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import datetime
 
 from src.controller.base_controller import send_typing_action
 from src.controller.statistic_controller import StatisticController
+from src.service.time_service import TimeService
+from src.service.event_service import EventService
 
 
 
@@ -14,17 +17,12 @@ class EventController:
         if len(context.args) <= 0:
             EventController.add_keyboard(update, context)
         else:
-            try:
-                time = int(context.args[0])
-            except ValueError:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Please enter a valid time")
-                return
-            if 0 < time < 2359:
-                EventController.add_job(update, context, time)
+            time = TimeService.is_valid_time(context.args[0])
+            if time[0]:
+                EventController.add_job(update, context, int(context.args[0]))
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Time to big or small")
+                                         text=time[1])
 
     @staticmethod
     def add_keyboard(update, context):
@@ -56,65 +54,43 @@ class EventController:
     ####################################################################################
 
     @staticmethod
-    @send_typing_action
     def remove_event(update, context):
-        if len(context.args) <= 0:
-            EventController.remove_keyboard(update, context)
-        else:
-            try:
-                time = int(context.args[0])
-            except ValueError:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Please enter a valid time")
-                return
-            if 0 < time < 2359:
-                EventController.remove_job(update, context, str(time))
-            else:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Time to big or small")
-
-    @staticmethod
-    def remove_keyboard(update, context):
-        if len(context.job_queue.jobs()) == 0:  # todo count only not removed
+        keyboard = EventService.rmv_event_keyboard(context.job_queue)
+        if len(keyboard) == 0:
             context.bot.send_message(chat_id=update.message.chat_id,
                                      text="There are no active events")
             return
 
-        custom_keyboard = [["/removeAllEvents"]]
-        for job in context.job_queue.jobs():
-            if not job.removed:
-                option = ["/removeEvent " + job.name]
-                custom_keyboard.append(option)
         context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Choose event or request a custom by '/removeEvent <4 numbers>'",
-                                 reply_markup=telegram.ReplyKeyboardMarkup(custom_keyboard))
+                                 text="Choose one of the following:",
+                                 reply_markup=InlineKeyboardMarkup(keyboard))
 
     @staticmethod
-    def remove_job(update, context, job_name):
-        for job in context.job_queue.get_jobs_by_name(job_name):
-            job.schedule_removal()
-
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Removed event '" + job_name + "'",
-                                 reply_markup=telegram.ReplyKeyboardRemove())
-
-    @staticmethod
-    @send_typing_action
-    def remove_all_jobs(update, context):
-        for job in context.job_queue.jobs():
-            job.schedule_removal()
-
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Removed all events",
-                                 reply_markup=telegram.ReplyKeyboardRemove())
+    def rmv_event_callback(update, context):
+        if update.callback_query.data == "rmv_event_all":
+            EventService.remove_all_jobs(context.job_queue)
+            update.callback_query.message.edit_text(text="All events removed.")
+        elif "rmv_event" in update.callback_query.data:
+            event_name = update.callback_query.data.split(" ")[1]
+            EventService.remove_job(context.job_queue, event_name)
+            keyboard = EventService.rmv_event_keyboard(context.job_queue)
+            update.callback_query.message.edit_text(text="Removed event: " + event_name,
+                                                    reply_markup=InlineKeyboardMarkup(keyboard))
 
     ####################################################################################
 
     @staticmethod
     def events(update, context):
-        reply = "This events are active:\n"
+        active_jobs = EventService.active_jobs(context.job_queue)
+        if len(active_jobs) == 0:
+            context.bot.send_message(chat_id=update.message.chat_id,
+                                     text="There are no active events")
+            return
 
-        for job in context.job_queue.jobs():
+        reply = "*This events are active:*\n"
+        for job in active_jobs:
             reply += "Event: " + job.name + "\n"
+        reply += "\nSever restart will reset all events."
+
         context.bot.send_message(chat_id=update.message.chat_id,
-                                 text=reply)
+                                 text=reply, parse_mode=telegram.ParseMode.MARKDOWN)
