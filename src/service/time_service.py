@@ -1,5 +1,4 @@
-import dateutil.tz
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class TimeService:
 
@@ -19,4 +18,6 @@ class TimeService:
     @staticmethod
     def parse_to_tz(time: datetime) -> datetime:
         # offset +2 hours for german time
-        return time.replace(tzinfo=dateutil.tz.tzoffset(None, 2 * (60 * 60)))
+        ts = time.timestamp()
+        german_time = datetime.utcfromtimestamp(ts) + timedelta(hours=2)
+        return german_time
