@@ -1,5 +1,4 @@
 import collections
-import dateutil.tz
 from typing import Dict
 
 from entity.score import Score
