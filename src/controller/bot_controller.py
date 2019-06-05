@@ -6,7 +6,7 @@ from telegram.ext import MessageHandler, Filters
 
 from controller.event_controller import EventController
 from controller.statistic_controller import StatisticController
-from controller.base_controller import handle_text_msg
+from controller.util_controller import UtilController
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -36,7 +36,10 @@ class BotController:
                                                   pattern='rmv_event')
         dispatcher.add_handler(callback_rmv_event)
 
-        message_handler = MessageHandler(Filters.text, handle_text_msg)
+        time_req_handler = CommandHandler('time', UtilController.events)
+        dispatcher.add_handler(time_req_handler)
+
+        message_handler = MessageHandler(Filters.text, UtilController.handle_text_msg)
         dispatcher.add_handler(message_handler)
 
         # needs to be the last handler
