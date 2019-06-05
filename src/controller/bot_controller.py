@@ -6,10 +6,15 @@ from controller.event_controller import EventController
 from controller.statistic_controller import StatisticController
 from controller.base_controller import handle_text_msg
 
+import datetime
+import dateutil.tz
+
 
 class BotController:
 
     def __init__(self):
+        # StatisticController.stats_to_time(1234, None, 1241)
+
         updater = Updater(token=os.environ['BOT_API_KEY'], use_context=True)  # used in version 12
         dispatcher = updater.dispatcher
 
