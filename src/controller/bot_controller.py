@@ -10,7 +10,7 @@ from controller.base_controller import handle_text_msg
 class BotController:
 
     def __init__(self):
-        updater = Updater(token=os.environ['BOT_API_KEY'], use_context=True)
+        updater = Updater(token=os.environ['BOT_API_KEY'])  # , use_context=True)  # used in version 12
         dispatcher = updater.dispatcher
 
         stat_handler = CommandHandler('stats', StatisticController.stats)
