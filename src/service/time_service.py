@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 class TimeService:
 
@@ -16,8 +16,22 @@ class TimeService:
             return [True, "Valid time"]
 
     @staticmethod
-    def parse_to_tz(time: datetime) -> datetime:
+    def datetime_to_tz(time: datetime) -> datetime:
         # offset +2 hours for german time
         ts = time.timestamp()
         german_time = datetime.utcfromtimestamp(ts) + timedelta(hours=2)
         return german_time
+
+    @staticmethod
+    def time_to_tz(ts: time) -> time:
+        if TimeService.is_utc_time():
+            return time((ts.hour - 2) % 24, ts.minute, ts.second)
+        return ts
+
+    @staticmethod
+    def is_utc_time() -> bool:
+        utc = datetime.utcnow().strftime("%H%M %d%m%Y")
+        local = datetime.now().strftime("%H%M %d%m%Y")
+        if utc is local:
+            return True
+        return False
