@@ -71,6 +71,6 @@ class StatisticService:
         text = "<b>Scoreboard for event: " + str(time) + "</b>\n\n"
 
         for user, score in stats.items():
-            text += user.first_name + "  ---  " + str(score.points)
+            text += user.first_name + "  ---  " + str(score.points) + "\n"
 
         return text
