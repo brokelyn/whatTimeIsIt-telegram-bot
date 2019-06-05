@@ -7,6 +7,6 @@ from entity.statistic import Statistic
 
 class Score(BaseEntity):
     user = peewee.ForeignKeyField(model=User)
-    points = peewee.IntegerField(null=False, default=0)
-    stat = peewee.ForeignKeyField(model=Statistic, null=False)
-    date = peewee.IntegerField(null=False, default=0)
+    points = peewee.IntegerField(default=0)
+    stat = peewee.ForeignKeyField(model=Statistic)
+    date = peewee.IntegerField(default=0)
