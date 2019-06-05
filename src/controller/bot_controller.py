@@ -44,10 +44,10 @@ class BotController:
         unknown_handler = MessageHandler(Filters.command, BotController.unknown)
         dispatcher.add_handler(unknown_handler)
 
+        print("Bot ready for requests")
+
         updater.start_polling()
         updater.idle()
-
-        print("Bot ready for requests")
 
     @staticmethod
     def unknown(update, context):
