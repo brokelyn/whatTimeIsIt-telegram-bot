@@ -1,3 +1,5 @@
+import logging
+
 import telegram, os
 from telegram.ext import CommandHandler, Updater, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
@@ -13,8 +15,6 @@ import dateutil.tz
 class BotController:
 
     def __init__(self):
-        # StatisticController.stats_to_time(1234, None, 1241)
-
         updater = Updater(token=os.environ['BOT_API_KEY'], use_context=True)  # used in version 12
         dispatcher = updater.dispatcher
 
