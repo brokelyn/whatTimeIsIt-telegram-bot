@@ -1,22 +1,8 @@
-from functools import wraps
-import dateutil.tz
-
 from entity.message import Message
 from entity.user import User
 from repo.message_repo import MessageRepo
 from repo.user_repo import UserRepo
 from service.time_service import TimeService
-
-
-def send_typing_action(func):
-    """Sends typing action while processing func command."""
-
-    @wraps(func)
-    def command_func(update, context, *args, **kwargs):
-        context.bot.send_chat_action(chat_id=update.effective_message.chat_id, action=ChatAction.TYPING)
-        return func(update, context, *args, **kwargs)
-
-    return command_func
 
 
 def handle_text_msg(update, context):
