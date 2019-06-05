@@ -8,9 +8,8 @@ from controller.event_controller import EventController
 from controller.statistic_controller import StatisticController
 from controller.base_controller import handle_text_msg
 
-import datetime
-import dateutil.tz
-
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
 
 class BotController:
 
