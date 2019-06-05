@@ -1,13 +1,15 @@
+import collections
+import dateutil.tz
+from typing import Dict
+
 from entity.score import Score
 from entity.user import User
 from entity.statistic import Statistic
 from repo.score_repo import ScoreRepo
 from repo.message_repo import MessageRepo
 from repo.statistic_repo import StatisticRepo
-import collections
-from datetime import datetime
+from service.time_service import TimeService
 
-from typing import Dict
 
 
 class StatisticService:
@@ -42,8 +44,9 @@ class StatisticService:
             user_score_dict[score.user] = score
 
         for msg in messages:
-            msg_date: int = int(msg.time.strftime('%Y%m%d'))
-            msg_time: int = int(msg.time.strftime('%H%M'))
+            time_tz = TimeService.parse_to_tz(msg.time)
+            msg_date: int = int(time_tz.strftime('%Y%m%d'))
+            msg_time: int = int(time_tz.strftime('%H%M'))
             if msg_time == stat.time:
                 if pattern in msg.text:
                     if msg.user not in user_score_dict:
