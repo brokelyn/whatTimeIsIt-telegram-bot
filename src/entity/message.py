@@ -5,8 +5,8 @@ from entity.user import User
 
 
 class Message(BaseEntity):
-    msg_id = peewee.IntegerField(primary_key=True, null=False)
+    msg_id = peewee.IntegerField(primary_key=True)
     text = peewee.TextField()
-    chat_id = peewee.IntegerField(null=False)
+    chat_id = peewee.IntegerField()
     user = peewee.ForeignKeyField(model=User)
-    time = peewee.DateTimeField(null=False)
+    time = peewee.DateTimeField()

@@ -13,7 +13,7 @@ class UserRepo:
 
     @staticmethod
     def create_if_not_exist(user: User):
-        query = User.select().where(User.username == user.username)
+        query = User.select().where(User.id == user.id)
         if not query.exists():
             UserRepo.create(user)
 
