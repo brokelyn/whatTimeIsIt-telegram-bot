@@ -34,10 +34,10 @@ class TimeService:
     def is_utc_time() -> bool:
         local_time = datetime.now()
         utc_ts = local_time.timestamp()
-        utc = datetime.utcfromtimestamp(utc_ts).strftime("%H%M %d%m%Y")
+        utc = datetime.utcfromtimestamp(utc_ts).strftime("%Y%m%d%H%M")
         print("Utc time: " + str(utc))
-        local = local_time.strftime("%H%M %d%m%Y")
-        print("Loc time " + str(local))
-        if utc is local:
+        local = local_time.strftime("%Y%m%d%H%M")
+        print("Loc time: " + str(local))
+        if int(utc) == int(local):
             return True
         return False
