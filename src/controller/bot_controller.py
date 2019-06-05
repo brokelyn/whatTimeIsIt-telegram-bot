@@ -26,10 +26,10 @@ class BotController:
         event_handler = CommandHandler('events', EventController.events)
         dispatcher.add_handler(event_handler)
 
-        add_event_handler = CommandHandler('addEvent', EventController.add_event)
+        add_event_handler = CommandHandler('add_event', EventController.add_event)
         dispatcher.add_handler(add_event_handler)
 
-        remove_event_handler = CommandHandler('removeEvent', EventController.remove_event)
+        remove_event_handler = CommandHandler('remove_vent', EventController.remove_event)
         dispatcher.add_handler(remove_event_handler)
 
         callback_rmv_event = CallbackQueryHandler(EventController.rmv_event_callback,
