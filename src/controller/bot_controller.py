@@ -42,6 +42,8 @@ class BotController:
         updater.start_polling()
         updater.idle()
 
+        print("Bot ready for requests")
+
     @staticmethod
     def unknown(update, context):
         update.message.reply_text("Unknown command")
