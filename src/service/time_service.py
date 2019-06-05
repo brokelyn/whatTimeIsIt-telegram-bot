@@ -24,7 +24,9 @@ class TimeService:
 
     @staticmethod
     def time_apply_tz(ts: time) -> time:
+        print(str(ts))
         if TimeService.is_utc_time():
+            print("Corrected time: " + str(time((ts.hour + 2) % 24, ts.minute, ts.second)))
             return time((ts.hour + 2) % 24, ts.minute, ts.second)
         return ts
 
@@ -33,7 +35,9 @@ class TimeService:
         local_time = datetime.now()
         utc_ts = local_time.timestamp()
         utc = datetime.utcfromtimestamp(utc_ts).strftime("%H%M %d%m%Y")
+        print("Utc time: " + str(utc))
         local = local_time.strftime("%H%M %d%m%Y")
+        print("Loc time " + str(local))
         if utc is local:
             return True
         return False

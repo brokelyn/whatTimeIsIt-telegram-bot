@@ -41,7 +41,7 @@ class EventController:
             return
 
         context.job_queue.run_repeating(StatisticController.stats_by_job, 86400,
-                                        first=TimeService.time_apply_tz(datetime.time(hours, minute, 10)),
+                                        first=TimeService.time_apply_tz(datetime.time(hours, minute, 5)),
                                         context=update.message.chat_id,
                                         name=str(time))
 
