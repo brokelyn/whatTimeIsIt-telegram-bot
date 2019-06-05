@@ -1,6 +1,5 @@
 import telegram
 
-from controller.base_controller import send_typing_action
 from repo.statistic_repo import StatisticRepo
 from service.statistic_service import StatisticService
 
@@ -8,7 +7,6 @@ from service.statistic_service import StatisticService
 class StatisticController:
 
     @staticmethod
-    # @send_typing_action
     def stats(update, context):
         if len(context.args) <= 0:
             StatisticController.stats_keyboard(update, context)
