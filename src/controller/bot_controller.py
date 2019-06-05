@@ -57,12 +57,12 @@ class BotController:
 
     @staticmethod
     def help(update, context):
-        help_page = "*WhatTimeIsIt Bot Help Page*\n\n"
+        help_page = "<b>WhatTimeIsIt Bot Help Page</b>\n\n"
         help_page += "-'/help' to show this help\n"
-        help_page += "-'/stats <time>' to show stats for time\n"
+        help_page += "-'/stats :time:' to show stats for time\n"
         help_page += "-'/events' to show all daily posted stats\n"
-		help_page += "-'/time' and repley a message to see its timestamp\n"
-        help_page += "-'/add_event <time>' to add an event at time\n"
+        help_page += "-'/time' and reply a message to see its timestamp\n"
+        help_page += "-'/add_event :time:' to add an event at time\n"
         help_page += "-'/remove_event' to remove a active event\n\n"
         help_page += "All text messages will be saved for analysing the scores. By participating"
         help_page += "in this group you accept this condition.\n\n"
@@ -70,4 +70,4 @@ class BotController:
 
         context.bot.send_message(chat_id=update.message.chat_id, text=help_page,
                                  reply_markup=telegram.ReplyKeyboardRemove(),
-                                 parse_mode=telegram.ParseMode.MARKDOWN)
+                                 parse_mode=telegram.ParseMode.HTML)
