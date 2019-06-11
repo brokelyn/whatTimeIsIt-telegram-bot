@@ -1,11 +1,6 @@
 import peewee, os
 import urllib.parse
 
-from entity.message import Message
-from entity.user import User
-from entity.statistic import Statistic
-from entity.score import Score
-
 
 def connect_db():
     if 'HEROKU' not in os.environ:
@@ -20,5 +15,10 @@ def connect_db():
 
 def init():
     db = connect_db()
+
+    from entity.message import Message
+    from entity.user import User
+    from entity.statistic import Statistic
+    from entity.score import Score
 
     db.create_tables([User, Message, Score, Statistic])
