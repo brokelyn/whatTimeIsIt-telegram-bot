@@ -1,8 +1,14 @@
-import peewee
+import peewee, os
 
-db = peewee.SqliteDatabase('WhatTimeIsIt.db')
+
+def connect_db():
+    if os.environ['ENV'] == 'dev':
+        db = peewee.SqliteDatabase('WhatTimeIsIt.db')
+    else:
+        db = peewee.PostgresqlDatabase(os.environ['DATABASE_URL'])
+    return db
 
 
 class BaseEntity(peewee.Model):
     class Meta:
-        database = db
+        database = connect_db()
