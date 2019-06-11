@@ -8,3 +8,6 @@ class User(BaseEntity):
     username = peewee.CharField(255, null=True)
     first_name = peewee.CharField(255)
     last_name = peewee.CharField(255, null=True)
+
+    class Meta:
+        db_table = 'users'
