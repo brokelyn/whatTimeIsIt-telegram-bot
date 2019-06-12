@@ -72,7 +72,7 @@ class StatisticService:
 
         for user, score in stats.items():
             text += user.first_name
-            text += " " * (20 - len(user.first_name))
-            text += "---" + str(score.points) + "\n"
+            text += " " * (30 - len(user.first_name))
+            text += str(score.points) + "\n"
 
         return text
