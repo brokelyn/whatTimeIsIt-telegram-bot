@@ -22,3 +22,5 @@ def init():
     from entity.score import Score
 
     db.create_tables([User, Message, Score, Statistic])
+
+    db.close()
