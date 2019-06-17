@@ -35,8 +35,9 @@ class StatisticController:
     def stats_to_time(chat_id, bot, time: int):
         statistic = StatisticRepo.get_or_create(time)
         StatisticService.calc_stats(statistic)
-        dict = StatisticService.extract_scores(statistic)
-        board_text = StatisticService.html_presentation(dict, statistic.time)
+        unsorted_dict = StatisticService.extract_scores(statistic)
+        sorted_dict = StatisticService.sort_dict(unsorted_dict)
+        board_text = StatisticService.html_presentation(sorted_dict, statistic.time)
         bot.send_message(chat_id=chat_id, text=board_text, parse_mode="HTML",
                          reply_markup=telegram.ReplyKeyboardRemove())
 
