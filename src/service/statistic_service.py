@@ -70,9 +70,11 @@ class StatisticService:
             return "Sadly there are no scores for event '" + str(time) + "'"
         text = "<b>Scoreboard for event: " + str(time) + "</b>\n\n"
 
+        index = 1
         for user, score in stats.items():
-            text += user.first_name
+            text += str(index) + ". " + user.first_name
             text += " " * (30 - len(user.first_name))
             text += str(score.points) + "\n"
+            index += 1
 
         return text
