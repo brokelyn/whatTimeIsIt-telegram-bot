@@ -37,8 +37,8 @@ class StatisticController:
         StatisticService.calc_stats(statistic)
         unsorted_dict = StatisticService.extract_scores(statistic)
         sorted_dict = StatisticService.sort_dict(unsorted_dict)
-        board_text = StatisticService.html_presentation(sorted_dict, statistic.time)
-        bot.send_message(chat_id=chat_id, text=board_text, parse_mode="HTML",
+        board_text = StatisticService.markdown_presentation(sorted_dict, statistic.time)
+        bot.send_message(chat_id=chat_id, text=board_text, parse_mode="Markdown",
                          reply_markup=telegram.ReplyKeyboardRemove())
 
     @staticmethod
