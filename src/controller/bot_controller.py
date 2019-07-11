@@ -7,6 +7,9 @@ from telegram.ext import MessageHandler, Filters
 from controller.event_controller import EventController
 from controller.statistic_controller import StatisticController
 from controller.util_controller import UtilController
+from repo.event_repo import EventRepo
+from service.event_service import EventService
+
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -49,6 +52,8 @@ class BotController:
         unknown_handler = MessageHandler(Filters.command, BotController.unknown)
         dispatcher.add_handler(unknown_handler)
 
+        BotController.init_events(updater.job_queue)
+
         print("Bot ready for requests")
 
         updater.start_polling()
@@ -74,3 +79,9 @@ class BotController:
         context.bot.send_message(chat_id=update.message.chat_id, text=help_page,
                                  reply_markup=telegram.ReplyKeyboardRemove(),
                                  parse_mode=telegram.ParseMode.HTML)
+
+    @staticmethod
+    def init_events(job_queue):
+        events = EventRepo.findAll()
+        for event in events:
+            EventService.create_job(job_queue, event.chat_id, event.time)
