@@ -15,6 +15,7 @@ def connect_db():
         print("Heroku Postgres DB active")
     return db
 
+
 def init():
     db = connect_db()
 

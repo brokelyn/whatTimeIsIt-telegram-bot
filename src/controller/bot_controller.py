@@ -36,6 +36,9 @@ class BotController:
                                                   pattern='rmv_event')
         dispatcher.add_handler(callback_rmv_event)
 
+        callback_stats = CallbackQueryHandler(StatisticController.stats_callback, pattern='stats')
+        dispatcher.add_handler(callback_stats)
+
         time_req_handler = CommandHandler('time', UtilController.message_time)
         dispatcher.add_handler(time_req_handler)
 
