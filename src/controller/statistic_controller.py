@@ -40,7 +40,7 @@ class StatisticController:
 
     @staticmethod
     def stats_by_job(context):
-        text = StatisticService.stats_to_time(context.job.context, context.bot, int(context.job.name))
-        context.bot.send_message(chat_id=context.job.context.update.message.chat_id,
+        text = StatisticService.stats_to_time(int(context.job.name))
+        context.bot.send_message(chat_id=context.job.context,
                                  text=text, parse_mode="Markdown",
                                  reply_markup=telegram.ReplyKeyboardRemove())
