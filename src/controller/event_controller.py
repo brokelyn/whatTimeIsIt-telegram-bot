@@ -81,7 +81,6 @@ class EventController:
         reply = "*This events are active:*\n\n"
         for job in active_jobs:
             reply += "Event @ " + job.name + "\n"
-        reply += "\nSever restart will reset all events."
 
         context.bot.send_message(chat_id=update.message.chat_id,
                                  text=reply, parse_mode=telegram.ParseMode.MARKDOWN)
