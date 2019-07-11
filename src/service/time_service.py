@@ -3,17 +3,17 @@ from datetime import datetime, timedelta, time
 class TimeService:
 
     @staticmethod
-    def is_valid_time(time_str: str) -> [bool, str]:
+    def is_valid_time(time_str: str) -> int:
         try:
             time = int(time_str)
         except ValueError:
-            return [False, "No valid time"]
-        if time > 2359:
-            return [False, "Time too big"]
-        elif time < 0:
-            return [False, "Time too small"]
+            return -1
+        if 0 > time > 2359:
+            return -1
+        if len(time_str) > 2 and int(time_str[-2]) > 5:
+            return -1
         else:
-            return [True, "Valid time"]
+            return time
 
     @staticmethod
     def datetime_apply_tz(time: datetime) -> datetime:
