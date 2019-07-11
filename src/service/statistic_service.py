@@ -14,7 +14,7 @@ from service.time_service import TimeService
 class StatisticService:
 
     @staticmethod
-    def extract_scores(stat: Statistic) -> Dict[User, Score]:
+    def extract_scores_from_statistic(stat: Statistic) -> Dict[User, Score]:
         scores = ScoreRepo.scores_to_stat(stat)
 
         name_score = dict()
@@ -78,3 +78,12 @@ class StatisticService:
             index += 1
 
         return text + "`"
+
+    @staticmethod
+    def stats_to_time(time: int) -> str:
+        statistic = StatisticRepo.get_or_create(time)
+        StatisticService.calc_stats(statistic)
+        unsorted_dict = StatisticService.extract_scores_from_statistic(statistic)
+        sorted_dict = StatisticService.sort_dict(unsorted_dict)
+        board_text = StatisticService.markdown_presentation(sorted_dict, statistic.time)
+        return board_text
