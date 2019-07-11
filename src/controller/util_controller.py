@@ -13,12 +13,13 @@ class UtilController:
 
     @staticmethod
     def time_check(message):
-        if TimeService.is_valid_time(message.text)[0]:
+        msg_text_time = TimeService.is_valid_time(message.text)
+        if msg_text_time is not -1:
             time_tz = TimeService.datetime_apply_tz(message.date)
             msg_datetime = time_tz.strftime('%H%M')
-            if not message.text == msg_datetime:
+            if not msg_text_time == int(msg_datetime):
                 message.reply_text("This time post seems wrong...\n"
-                                   "Telegram msg time:   " + msg_datetime)
+                                   "Telegram msg timestamp:   " + msg_datetime)
             else:
                 UtilController.persist_message(message)
 

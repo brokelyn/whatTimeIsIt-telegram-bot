@@ -16,11 +16,11 @@ class EventController:
             EventController.add_keyboard(update, context)
         else:
             time = TimeService.is_valid_time(context.args[0])
-            if time[0]:
+            if time is not -1:
                 EventController.add_job(update, context, int(context.args[0]))
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
-                                         text=time[1])
+                                         text="Time request is invalid")
 
     @staticmethod
     def add_keyboard(update, context):
