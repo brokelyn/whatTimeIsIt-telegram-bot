@@ -23,7 +23,8 @@ def init():
     from entity.user import User
     from entity.statistic import Statistic
     from entity.score import Score
+    from entity.event import Event
 
-    db.create_tables([User, Message, Score, Statistic])
+    db.create_tables([User, Message, Score, Statistic, Event])
 
     db.close()
