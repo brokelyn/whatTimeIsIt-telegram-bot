@@ -1,5 +1,11 @@
 from typing import List
 from telegram import InlineKeyboardButton
+import datetime
+
+from controller.statistic_controller import StatisticController
+from service.time_service import TimeService
+from repo.event_repo import EventRepo
+from entity.event import Event
 
 
 class EventService:
@@ -13,15 +19,19 @@ class EventService:
 
         return active
 
+    ####################################################################################
+
     @staticmethod
-    def remove_job(job_queue, job_name: str):
+    def remove_event(job_queue, job_name: str):
+        EventRepo.delete(int(job_name))
         for job in job_queue.get_jobs_by_name(job_name):
             job.schedule_removal()
 
     @staticmethod
-    def remove_all_jobs(job_queue):
+    def remove_all_events(job_queue):
         active_jobs = EventService.active_jobs(job_queue)
 
+        EventRepo.delete_all()
         for job in active_jobs:
             job.schedule_removal()
 
@@ -38,3 +48,18 @@ class EventService:
             keyboard.append([InlineKeyboardButton("Remove all events", callback_data="rmv_event_all")])
 
         return keyboard
+
+    ####################################################################################
+
+    @staticmethod
+    def create_event(job_queue, chat_id, time: int):
+        EventRepo.create(Event(time=time, chat_id=chat_id))
+        EventService.create_job(job_queue, chat_id, time)
+
+    @staticmethod
+    def create_job(job_queue, chat_id, time: int):
+        hours = int(str(time)[0] + str(time)[1])
+        minute = (time - (hours * 100)) + 1
+        job_queue.run_repeating(StatisticController.stats_by_job, 86400,
+                                first=TimeService.time_apply_tz(datetime.time(hours, minute, 5)),
+                                context=chat_id, name=str(time))

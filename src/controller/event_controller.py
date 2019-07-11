@@ -1,10 +1,9 @@
 import telegram
 from telegram import InlineKeyboardMarkup
-import datetime
 
-from controller.statistic_controller import StatisticController
 from service.time_service import TimeService
 from service.event_service import EventService
+from repo.event_repo import EventRepo
 
 
 
@@ -31,19 +30,13 @@ class EventController:
 
     @staticmethod
     def add_job(update, context, time: int):
-        hours = int(str(time)[0] + str(time)[1])
-        minute = (time - (hours * 100)) + 1
-
-        if len(context.job_queue.get_jobs_by_name(str(time))) > 0:
+        if len(context.job_queue.get_jobs_by_name(str(time))) > 0 or EventRepo.exists(time):
             context.bot.send_message(chat_id=update.message.chat_id,
                                      text="This event already exists",
                                      reply_markup=telegram.ReplyKeyboardRemove())
             return
 
-        context.job_queue.run_repeating(StatisticController.stats_by_job, 86400,
-                                        first=TimeService.time_apply_tz(datetime.time(hours, minute, 5)),
-                                        context=update.message.chat_id,
-                                        name=str(time))
+        EventService.create_event(context.job_queue, update.message.chat_id, time)
 
         context.bot.send_message(chat_id=update.message.chat_id,
                                  text="Added event '" + str(time) + "'",
@@ -66,11 +59,11 @@ class EventController:
     @staticmethod
     def rmv_event_callback(update, context):
         if update.callback_query.data == "rmv_event_all":
-            EventService.remove_all_jobs(context.job_queue)
+            EventService.remove_all_events(context.job_queue)
             update.callback_query.message.edit_text(text="All events removed.")
         elif "rmv_event" in update.callback_query.data:
             event_name = update.callback_query.data.split(" ")[1]
-            EventService.remove_job(context.job_queue, event_name)
+            EventService.remove_event(context.job_queue, event_name)
             keyboard = EventService.rmv_event_keyboard(context.job_queue)
             update.callback_query.message.edit_text(text="Removed event: " + event_name,
                                                     reply_markup=InlineKeyboardMarkup(keyboard))
