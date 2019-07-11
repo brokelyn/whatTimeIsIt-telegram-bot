@@ -2,6 +2,7 @@ import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 from service.statistic_service import StatisticService
+from service.time_service import TimeService
 
 
 class StatisticController:
@@ -11,20 +12,15 @@ class StatisticController:
         if len(context.args) <= 0:
             StatisticController.stats_keyboard(update, context)
         else:
-            try:
-                time = int(context.args[0])
-            except ValueError:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Please enter a valid time")
-                return
-            if 0 < time < 2359:
+            time = TimeService.is_valid_time(context.args[0])
+            if not time == -1:
                 board_text = StatisticService.stats_to_time(time)
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text=board_text, parse_mode="Markdown",
                                          reply_markup=telegram.ReplyKeyboardRemove())
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Time to big or small")
+                                         text="Time request is invalid")
 
     @staticmethod
     def stats_keyboard(update, context):
