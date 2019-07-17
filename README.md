@@ -38,6 +38,8 @@ set some environment variables.
 1. Your bot api key should be named: `BOT_API_KEY=`
 2. A database url if you use an external db: `DATABASE_URL=`
 3. A trigger make the app use the external db: `HEROKU=1234` 
+   Do not set this variable when working in dev mode. If this variable is not set the programm will create a local SQLite 
+   database in the src directory.
 
 Then you should be able to start the application by calling `python3 main.py`
 in the `src` folder of the project.
