@@ -70,12 +70,15 @@ class StatisticService:
             return "Sadly there are no scores for event '" + str(time) + "'"
         text = "*Scoreboard for event:* " + str(time) + "\n\n`"
 
-        index = 1
+        index = 0
+        last_score = -1
         for user, score in stats.items():
+            if not last_score == score.points:
+                index += 1
             text += str(index) + ". " + user.first_name
             text += " " * (17 - len(user.first_name))
             text += str(score.points) + "\n"
-            index += 1
+            last_score = score.points
 
         return text + "`"
 
