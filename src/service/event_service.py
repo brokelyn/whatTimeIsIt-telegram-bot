@@ -62,5 +62,5 @@ class EventService:
         hours += int(time / 100) - hours
         minute = time - (hours * 100)
         job_queue.run_repeating(StatisticController.stats_by_job, 86400,
-                                first=TimeService.time_apply_tz(datetime.time(hours, minute, 5)),
+                                first=TimeService.time_apply_tz(datetime.time(hours, minute + 1, 5)),
                                 context=chat_id, name=str(time))
