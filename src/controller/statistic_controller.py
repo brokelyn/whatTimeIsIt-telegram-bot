@@ -26,7 +26,8 @@ class StatisticController:
     def stats_keyboard(update, context):
         inline_keyboard = [[InlineKeyboardButton("1337 statistics", callback_data="stats 1337")],
                            [InlineKeyboardButton("1111 statistics", callback_data="stats 1111")],
-                           [InlineKeyboardButton("2222 statistics", callback_data="stats 2222")]]
+                           [InlineKeyboardButton("2222 statistics", callback_data="stats 2222")],
+                           [InlineKeyboardButton("0000 statistics", callback_data="stats 0000")]]
         context.bot.send_message(chat_id=update.message.chat_id,
                                  text="Choose a stat or request a custom by '/stats <4 numbers>'",
                                  reply_markup=InlineKeyboardMarkup(inline_keyboard))

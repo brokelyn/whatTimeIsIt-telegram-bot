@@ -23,7 +23,7 @@ class EventController:
 
     @staticmethod
     def add_keyboard(update, context):
-        custom_keyboard = [['/add_event 1337'], ['/add_event 1111', '/add_event 2222']]
+        custom_keyboard = [['/add_event 1337', '/add_event 0'], ['/add_event 1111', '/add_event 2222']]
         context.bot.send_message(chat_id=update.message.chat_id,
                                  text="Choose event or request a custom by '/add_event <4 numbers>'",
                                  reply_markup=telegram.ReplyKeyboardMarkup(custom_keyboard))
