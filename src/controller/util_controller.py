@@ -19,7 +19,7 @@ class UtilController:
             msg_datetime = time_tz.strftime('%H%M')
             if not msg_text_time == int(msg_datetime):
                 message.reply_text("This time post seems wrong from " +
-                                   message.user.first_name + "...\n"
+                                   message.from_user.first_name + " " + message.from_user.last_name + "...\n"
                                    "Telegram msg timestamp:   " + msg_datetime)
             else:
                 UtilController.persist_message(message)
