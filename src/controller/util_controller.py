@@ -16,7 +16,7 @@ class UtilController:
         msg_text_time = TimeService.is_valid_time(message.text)
         if msg_text_time is not -1:
             time_tz = TimeService.datetime_apply_tz(message.date)
-            msg_datetime = time_tz.strftime('%H:%M')
+            msg_datetime = time_tz.strftime('%H%M')
             if not msg_text_time == int(msg_datetime):
                 message.reply_text("This time post seems wrong from " +
                                    message.user.first_name + "...\n"
