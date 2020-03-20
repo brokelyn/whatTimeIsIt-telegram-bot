@@ -1,9 +1,12 @@
 from datetime import datetime, timedelta, time
+import pytz
 
 class TimeService:
 
     @staticmethod
     def is_valid_time(time_str: str) -> int:
+        # -1         , invalid
+        # time as int, valid
         try:
             time = int(time_str)
         except ValueError:
@@ -19,8 +22,10 @@ class TimeService:
     def datetime_apply_tz(time: datetime) -> datetime:
         # offset +2 hours for german time
         ts = time.timestamp()
-        german_time = datetime.utcfromtimestamp(ts) + timedelta(hours=2)
-        return german_time
+        tz = pytz.timezone("Europe/Berlin")
+        german_time_off = tz.localize(datetime.utcfromtimestamp(ts))
+        german_time = german_time_off + german_time_off.utcoffset()
+        return german_time.replace(tzinfo=None)  # remove offset
 
     @staticmethod
     def time_apply_tz(ts: time) -> time:
