@@ -53,7 +53,6 @@ class EventService:
 
     @staticmethod
     def create_event(job_queue, chat_id, time: int):
-        print(chat_id)
         EventRepo.create(Event(time=time, chat_id=chat_id))
         EventService.create_job(job_queue, chat_id, time)
 
