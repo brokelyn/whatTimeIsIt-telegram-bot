@@ -66,6 +66,9 @@ class EventService:
                                                                              second=5), False)
         td = (datetime.now() - datetime.utcnow())
         start_time = (start_utctime + td).replace(microsecond=0, tzinfo=None)
+        print(datetime.now())
+        print(datetime.utcnow())
+        print(start_time)
 
         job_queue.run_repeating(StatisticController.stats_by_job, interval=86400,
                                 first=start_time.time(), context=chat_id, name=str(time))
