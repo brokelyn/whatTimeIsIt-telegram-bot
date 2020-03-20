@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, time
+from datetime import datetime, time
 import pytz
 
 class TimeService:
@@ -20,7 +20,6 @@ class TimeService:
 
     @staticmethod
     def datetime_apply_tz(time: datetime) -> datetime:
-        # offset +2 hours for german time
         ts = time.timestamp()
         tz = pytz.timezone("Europe/Berlin")
         german_time_off = tz.localize(datetime.utcfromtimestamp(ts))
