@@ -24,20 +24,14 @@ class TimeService:
         tz = pytz.timezone("Europe/Berlin")
         german_time_off = tz.localize(datetime.utcfromtimestamp(ts))
         german_time = german_time_off + german_time_off.utcoffset()
+
         return german_time.replace(tzinfo=None)  # remove offset
 
     @staticmethod
     def time_apply_tz(ts: time) -> time:
-        if TimeService.is_utc_time():
-            return time((ts.hour - 2) % 24, ts.minute, ts.second)
-        return ts
+        utcnow = datetime.utcnow()
+        utcnow = utcnow.replace(hour=ts.hour, minute=ts.minute, second=ts.second)
 
-    @staticmethod
-    def is_utc_time() -> bool:
-        local_time = datetime.now()
-        utc_ts = local_time.timestamp()
-        utc = datetime.utcfromtimestamp(utc_ts).strftime("%Y%m%d%H%M")
-        local = local_time.strftime("%Y%m%d%H%M")
-        if int(utc) == int(local):
-            return True
-        return False
+        tz_datetime = TimeService.datetime_apply_tz(utcnow)
+
+        return tz_datetime.time()

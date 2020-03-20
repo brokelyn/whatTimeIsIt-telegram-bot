@@ -1,6 +1,6 @@
 from typing import List
 from telegram import InlineKeyboardButton
-from datetime import datetime
+import datetime
 
 from controller.statistic_controller import StatisticController
 from service.time_service import TimeService
@@ -61,11 +61,7 @@ class EventService:
         hours = int(time / 1000) * 10
         hours += int(time / 100) - hours
         minute = time - (hours * 100)
-        start_datetime = TimeService.time_apply_tz(datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5))
-        print(start_datetime)
-        print(type(start_datetime))
-        print((start_datetime.time()))
-        print(type(start_datetime.time()))
+
+        start_time = TimeService.time_apply_tz(datetime.time(hours, minute + 1, 5))
         job_queue.run_repeating(StatisticController.stats_by_job, interval=86400,
-                                first=start_datetime.time(),
-                                context=chat_id, name=str(time))
+                                first=start_time, context=chat_id, name=str(time))
