@@ -62,6 +62,10 @@ class EventService:
         hours += int(time / 100) - hours
         minute = time - (hours * 100)
         start_datetime = TimeService.time_apply_tz(datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5))
+        print(start_datetime)
+        print(type(start_datetime))
+        print((start_datetime.time()))
+        print(type(start_datetime.time()))
         job_queue.run_repeating(StatisticController.stats_by_job, interval=86400,
                                 first=start_datetime.time(),
                                 context=chat_id, name=str(time))
