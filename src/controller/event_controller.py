@@ -16,7 +16,7 @@ class EventController:
         else:
             time = TimeService.is_valid_time(context.args[0])
             if time is not -1:
-                EventController.add_job(update, context, int(context.args[0]))
+                EventController.add_job(update, context, time)
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text="Time request is invalid")
@@ -74,13 +74,11 @@ class EventController:
     def events(update, context):
         active_jobs = EventService.active_jobs(context.job_queue)
         if len(active_jobs) == 0:
+            context.bot.send_message(chat_id=update.message.chat_id, text="There are no active events")
+        else:
+            reply = "*This events are active:*\n\n"
+            for job in active_jobs:
+                reply += "Event @ " + job.name + "\n"
+
             context.bot.send_message(chat_id=update.message.chat_id,
-                                     text="There are no active events")
-            return
-
-        reply = "*This events are active:*\n\n"
-        for job in active_jobs:
-            reply += "Event @ " + job.name + "\n"
-
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text=reply, parse_mode=telegram.ParseMode.MARKDOWN)
+                                     text=reply, parse_mode=telegram.ParseMode.MARKDOWN)
