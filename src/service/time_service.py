@@ -28,4 +28,4 @@ class TimeService:
             german_time = utc_time_off + utc_time_off.utcoffset()
             return german_time.replace(tzinfo=None)  # remove offset
         else:
-            return utc_time_off
+            return utc_time_off + utc_time_off.utcoffset()
