@@ -19,13 +19,21 @@ class TimeService:
             return time
 
     @staticmethod
-    def datetime_apply_tz(time: datetime, exclude_off=True) -> datetime:
+    def datetime_correct_tz(time: datetime) -> datetime:
         ts = time.timestamp()
         tz = pytz.timezone("Europe/Berlin")
         utc_time_off = tz.localize(datetime.utcfromtimestamp(ts))
+        print("utc ts")
+        print(utc_time_off)
 
-        if exclude_off:
-            german_time = utc_time_off + utc_time_off.utcoffset()
-            return german_time.replace(tzinfo=None)  # remove offset
-        else:
-            return utc_time_off + utc_time_off.utcoffset()
+        german_time = utc_time_off + utc_time_off.utcoffset()
+        return german_time.replace(tzinfo=None)  # remove offset
+
+    @staticmethod
+    def datetime_apply_tz(time: datetime) -> datetime:
+        tz = pytz.timezone("Europe/Berlin")
+        time_off = tz.localize(time)
+        print("ts off")
+        print(time_off)
+
+        return time_off

@@ -62,8 +62,9 @@ class EventService:
         hours += int(time / 100) - hours
         minute = time - (hours * 100)
 
-        start_tztime = TimeService.datetime_apply_tz(datetime.now().replace(hour=hours, minute=minute + 1,
-                                                                            second=5), False)
+        job_time = datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5)
+        print(job_time)
+        start_tztime = TimeService.datetime_apply_tz(job_time)
         print(start_tztime)
         server_to_utc = (datetime.now() - datetime.utcnow())
         print(server_to_utc)
