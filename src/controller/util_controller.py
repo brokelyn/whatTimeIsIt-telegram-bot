@@ -15,7 +15,7 @@ class UtilController:
     def time_check(message):
         msg_text_time = TimeService.is_valid_time(message.text)
         if msg_text_time is not -1:
-            time_tz = TimeService.datetime_apply_tz(message.date)
+            time_tz = TimeService.datetime_correct_tz(message.date)
             msg_datetime = time_tz.strftime('%H%M')
             if not msg_text_time == int(msg_datetime):
                 message.reply_text("This time post seems wrong from " +
@@ -41,7 +41,7 @@ class UtilController:
     def message_time(update, context):
         rpl_msg = update.message.reply_to_message
         if rpl_msg:
-            msg_time = TimeService.datetime_apply_tz(rpl_msg.date)
+            msg_time = TimeService.datetime_correct_tz(rpl_msg.date)
             rpl_msg.reply_text("Timestamp of this message is:\n" +
                                msg_time.strftime('%H:%M:%S at %d.%m.%Y'))
         else:
