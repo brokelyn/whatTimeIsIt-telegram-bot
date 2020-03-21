@@ -65,16 +65,14 @@ class EventService:
         start_tztime = TimeService.datetime_apply_tz(datetime.now().replace(hour=hours, minute=minute + 1,
                                                                             second=5), False)
         print(start_tztime)
-        server_to_utc = (datetime.utcnow() - datetime.now())
+        server_to_utc = (datetime.now() - datetime.utcnow())
         print(server_to_utc)
         start_time = (start_tztime + server_to_utc)
         print(start_time)
-        start_time = (start_time + start_tztime.utcoffset())
+        start_time = (start_time - start_tztime.utcoffset())
         print(start_time)
         start_time = start_time.replace(microsecond=0, tzinfo=None)
         print(start_time)
-        print(datetime.now())
-        print(datetime.utcnow())
 
         job_queue.run_repeating(StatisticController.stats_by_job, interval=86400,
                                 first=start_time.time(), context=chat_id, name=str(time))
