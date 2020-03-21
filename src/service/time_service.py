@@ -23,8 +23,6 @@ class TimeService:
         ts = time.timestamp()
         tz = pytz.timezone("Europe/Berlin")
         utc_time_off = tz.localize(datetime.utcfromtimestamp(ts))
-        print("utc ts")
-        print(utc_time_off)
 
         german_time = utc_time_off + utc_time_off.utcoffset()
         return german_time.replace(tzinfo=None)  # remove offset
@@ -33,7 +31,5 @@ class TimeService:
     def datetime_apply_tz(time: datetime) -> datetime:
         tz = pytz.timezone("Europe/Berlin")
         time_off = tz.localize(time)
-        print("ts off")
-        print(time_off)
 
         return time_off
