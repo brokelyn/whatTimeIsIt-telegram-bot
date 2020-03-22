@@ -36,7 +36,7 @@ class EventService:
             job.schedule_removal()
 
     @staticmethod
-    def rmv_event_keyboard(job_queue) -> List[InlineKeyboardButton]:
+    def rmv_event_keyboard(job_queue) -> List[List[InlineKeyboardButton]]:
         active_jobs = EventService.active_jobs(job_queue)
 
         keyboard = list()
@@ -62,12 +62,12 @@ class EventService:
         hours += int(time / 100) - hours
         minute = time - (hours * 100)
 
-        job_time = datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5)
-        start_tztime = TimeService.datetime_apply_tz(job_time)
+        given_start_time = datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5)
+        start_time_tz = TimeService.datetime_apply_tz(given_start_time)
         server_to_utc = (datetime.now() - datetime.utcnow())
-        start_time = (start_tztime + server_to_utc)
-        start_time = (start_time - start_tztime.utcoffset())
-        start_time = start_time.replace(microsecond=0, tzinfo=None)
+        temp = (start_time_tz + server_to_utc)
+        server_start_time = (temp - start_time_tz.utcoffset())
+        server_start_time = server_start_time.replace(microsecond=0, tzinfo=None)
 
         job_queue.run_repeating(StatisticController.stats_by_job, interval=86400,
-                                first=start_time.time(), context=chat_id, name=str(time))
+                                first=server_start_time.time(), context=chat_id, name=str(time))
