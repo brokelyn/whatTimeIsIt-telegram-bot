@@ -18,5 +18,5 @@ class MessageRepo:
         return list(Message.select())
 
     @staticmethod
-    def findByMsgIdIsGreater(id: int) -> List[Message]:
-        return list(Message.select().where(Message.msg_id > id))
+    def findByIdIsGreater(id: int) -> List[Message]:
+        return list(Message.select().where(Message.id > id))

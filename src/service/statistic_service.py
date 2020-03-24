@@ -33,7 +33,7 @@ class StatisticService:
     def calc_stats(stat: Statistic):
         pattern = str(stat.time)
         scores = ScoreRepo.scores_to_stat(stat)
-        messages = MessageRepo.findByMsgIdIsGreater(stat.last_msg_id)
+        messages = MessageRepo.findByIdIsGreater(stat.last_msg_id)
         if len(messages) == 0:
             return
 
