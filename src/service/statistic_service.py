@@ -59,7 +59,7 @@ class StatisticService:
         for score in user_score_dict.values():
             ScoreRepo.save(score)
 
-        stat.last_msg_id = messages[-1].msg_id
+        stat.last_msg_id = messages[-1].id
         StatisticRepo.save(stat)
 
 
