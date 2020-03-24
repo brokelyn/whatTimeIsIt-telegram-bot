@@ -5,7 +5,7 @@ from entity.user import User
 
 
 class Message(BaseEntity):
-    id = peewee.BigIntegerField(primary_key=True)
+    id = peewee.IntegerField(primary_key=True)
     msg_id = peewee.BigIntegerField()
     text = peewee.TextField()
     chat_id = peewee.BigIntegerField()
