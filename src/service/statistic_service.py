@@ -107,8 +107,8 @@ class StatisticService:
             else:
                 text += str(index) + ". " + user.first_name
 
-            text += " " * (17 - len(user.first_name))
-            text += str(score.points)
+            text += " " * (16 - len(user.first_name))
+            text += str(score.points) + " " * (3 - len(str(score.points)))
 
             if user in old_stats:
                 text += "(+" + str(score.points - old_stats[user].points) + ") "
