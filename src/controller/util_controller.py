@@ -22,8 +22,9 @@ class UtilController:
                                    message.from_user.first_name + " " + message.from_user.last_name + ".\n"
                                    + "Message timestamp:    " + time_tz.strftime('%H:%M:%S'))
             else:
-                message.text = str(msg_text_time)
-                UtilController.persist_message(message)
+                if not MessageRepo.sameTimeSameUserMessageExists(message):
+                    message.text = str(msg_text_time)
+                    UtilController.persist_message(message)
 
     @staticmethod
     def persist_message(msg):
