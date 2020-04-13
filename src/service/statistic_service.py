@@ -83,6 +83,7 @@ class StatisticService:
                 index += 1
             if user.id == user_to_find.id:
                 return index
+            last_score = score.points
 
         return -1
 
