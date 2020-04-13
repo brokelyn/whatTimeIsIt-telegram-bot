@@ -22,9 +22,13 @@ class StatisticController:
                                          text=board_text, parse_mode="Markdown",
                                          reply_markup=telegram.ReplyKeyboardRemove())
             elif not time == -1 and is_same_time:
+                available_time = current_time.replace(minute=current_time.minute + 1)
+                available_time = available_time.strftime("%H:%M")
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text="Ist man in kleinen Dingen nicht geduldig, "
-                                              "bringt man die großen Vorhaben zum scheitern.")
+                                              "bringt man die großen Vorhaben zum scheitern."
+                                              "\n\n Die neue Statistik ist erst um "
+                                              "" + available_time + " verfügbar.")
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text="Time request is invalid")
