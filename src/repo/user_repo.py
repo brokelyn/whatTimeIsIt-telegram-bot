@@ -20,3 +20,7 @@ class UserRepo:
     @staticmethod
     def get_or_none(id: int) -> User:
         return User.get_or_none(User.id == id)
+
+    @staticmethod
+    def findAll():
+        return list(User.select())

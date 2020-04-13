@@ -35,8 +35,8 @@ class TimeService:
         tz = pytz.timezone("Europe/Berlin")
         utc_time_off = tz.localize(datetime.utcfromtimestamp(ts))
 
-        german_time = utc_time_off + utc_time_off.utcoffset()
-        return german_time.replace(tzinfo=None)  # remove offset
+        gamezone_time = utc_time_off + utc_time_off.utcoffset()
+        return gamezone_time.replace(tzinfo=None)  # remove offset
 
     @staticmethod
     def datetime_apply_tz(time: datetime) -> datetime:

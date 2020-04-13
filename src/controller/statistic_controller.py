@@ -1,5 +1,6 @@
 import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from datetime import datetime
 
 from service.statistic_service import StatisticService
 from service.time_service import TimeService
@@ -13,11 +14,17 @@ class StatisticController:
             StatisticController.stats_keyboard(update, context)
         else:
             time = TimeService.is_valid_time(context.args[0])
-            if not time == -1:
+            current_time = TimeService.datetime_correct_tz(datetime.now())
+            is_same_time = current_time.strftime("%H%M") == str(time)
+            if not time == -1 and not is_same_time:
                 board_text = StatisticService.stats_to_time(time)
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text=board_text, parse_mode="Markdown",
                                          reply_markup=telegram.ReplyKeyboardRemove())
+            elif not time == -1 and is_same_time:
+                context.bot.send_message(chat_id=update.message.chat_id,
+                                         text="Ist man in kleinen Dingen nicht geduldig, "
+                                              "bringt man die großen Vorhaben zum scheitern.")
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text="Time request is invalid")
