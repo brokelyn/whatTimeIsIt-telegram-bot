@@ -4,10 +4,14 @@ from typing import Dict
 from entity.score import Score
 from entity.user import User
 from entity.statistic import Statistic
+from repo import user_repo
 from repo.score_repo import ScoreRepo
 from repo.message_repo import MessageRepo
 from repo.statistic_repo import StatisticRepo
 from service.time_service import TimeService
+
+import datetime
+
 
 
 
@@ -34,6 +38,7 @@ class StatisticService:
         pattern = str(stat.time)
         scores = ScoreRepo.scores_to_stat(stat)
         messages = MessageRepo.findByIdIsGreater(stat.last_msg_id)
+
         if len(messages) == 0:
             return
 
@@ -42,6 +47,8 @@ class StatisticService:
         for score in scores:
             user_score_dict[score.user] = score
 
+        last_user_list = []
+
         for msg in messages:
             time_tz = TimeService.datetime_correct_tz(msg.time)
             msg_date: int = int(time_tz.strftime('%Y%m%d'))
@@ -49,13 +56,18 @@ class StatisticService:
             if msg_time == stat.time:
                 if pattern in msg.text:
                     if msg.user not in user_score_dict:
-                        score = Score(user=msg.user, stat=stat)
-                        user_score_dict[msg.user] = score
-                    if msg_date != user_score_dict[msg.user].date:
+                        new_score = Score(user=msg.user, stat=stat)
+                        user_score_dict[msg.user] = new_score
+                    if msg_date > user_score_dict[msg.user].date:
                         user_score_dict[msg.user].points += 1
                         user_score_dict[msg.user].date = msg_date
+                        if msg.user not in last_user_list:
+                            last_msg = msg
+                            last_user_list.append(last_msg.user)
 
-        # save the new scores and stats
+        if len(last_user_list) != 0:
+            user_score_dict[last_user_list[-1]].points += 1
+
         for score in user_score_dict.values():
             ScoreRepo.save(score)
 
