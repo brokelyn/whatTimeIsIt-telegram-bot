@@ -21,11 +21,11 @@ class StatisticService:
     def extract_scores_from_statistic(stat: Statistic) -> Dict[User, Score]:
         scores = ScoreRepo.scores_to_stat(stat)
 
-        name_score = dict()
+        user_score = dict()
         for score in scores:
-            name_score[score.user] = score
+            user_score[score.user] = score
 
-        return name_score
+        return user_score
 
     @staticmethod
     def sort_dict(stats: Dict[User, int]) -> Dict[User, int]:
@@ -65,7 +65,7 @@ class StatisticService:
                             last_msg = msg
                             last_user_list.append(last_msg.user)
 
-        if len(last_user_list) != 0:
+        if len(last_user_list) > 1:
             user_score_dict[last_user_list[-1]].points += 1
 
         for score in user_score_dict.values():
@@ -74,22 +74,56 @@ class StatisticService:
         stat.last_msg_id = messages[-1].id
         StatisticRepo.save(stat)
 
-
-
     @staticmethod
-    def markdown_presentation(stats: Dict[User, Score], time: int) -> str:
-        if len(stats.keys()) == 0:
-            return "Sadly there are no scores for event '" + str(time) + "'"
-        text = "*Scoreboard for event:* " + str(time) + "\n\n`"
-
+    def get_statistic_rank(stats: Dict[User, Score], user_to_find: User) -> int:
         index = 0
         last_score = -1
         for user, score in stats.items():
             if not last_score == score.points:
                 index += 1
-            text += str(index) + ". " + user.first_name
+            if user.id == user_to_find.id:
+                return index
+
+        return -1
+
+
+    @staticmethod
+    def markdown_presentation(new_stats: Dict[User, Score], old_stats: Dict[User, Score], time: int) -> str:
+        if len(new_stats.keys()) == 0:
+            return "Sadly there are no scores for event '" + str(time) + "'"
+        text = "*Scoreboard for event:* " + str(time) + "\n\n`"
+
+        index = 0
+        last_score = -1
+        for user, score in new_stats.items():
+            if not last_score == score.points:
+                index += 1
+            if index == 1:
+                text += "🥇  " + user.first_name
+            elif index == 2:
+                text += "🥈  " + user.first_name
+            elif index == 3:
+                text += "🥉  " + user.first_name
+            else:
+                text += str(index) + ". " + user.first_name
+
             text += " " * (17 - len(user.first_name))
-            text += str(score.points) + "\n"
+            text += str(score.points)
+
+            if user in old_stats:
+                text += "(+" + str(score.points - old_stats[user].points) + ") "
+            else:
+                text += "(+" + str(score.points) + ") "
+
+            old_rank = StatisticService.get_statistic_rank(old_stats, user)
+            if old_rank == index:
+                text += "⏹"
+            elif old_rank < index:
+                text += "🔼"
+            elif old_rank > index:
+                text += "🔽"
+
+            text += "\n"
             last_score = score.points
 
         return text + "`"
@@ -97,8 +131,15 @@ class StatisticService:
     @staticmethod
     def stats_to_time(time: int) -> str:
         statistic = StatisticRepo.get_or_create(time)
+
+        # get old score for comparison
+        unsorted_old_scores = StatisticService.extract_scores_from_statistic(statistic)
+        sorted_old_scores = StatisticService.sort_dict(unsorted_old_scores)
+
+        # calculate new scores
         StatisticService.calc_stats(statistic)
-        unsorted_dict = StatisticService.extract_scores_from_statistic(statistic)
-        sorted_dict = StatisticService.sort_dict(unsorted_dict)
-        board_text = StatisticService.markdown_presentation(sorted_dict, statistic.time)
+        unsorted_new_scores = StatisticService.extract_scores_from_statistic(statistic)
+        sorted_new_scores = StatisticService.sort_dict(unsorted_new_scores)
+
+        board_text = StatisticService.markdown_presentation(sorted_new_scores, sorted_old_scores, statistic.time)
         return board_text
