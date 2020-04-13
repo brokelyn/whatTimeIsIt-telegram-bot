@@ -38,8 +38,9 @@ class StatisticService:
         pattern = str(stat.time)
         scores = ScoreRepo.scores_to_stat(stat)
         messages = MessageRepo.findByIdIsGreater(stat.last_msg_id)
-        #if len(messages) == 0:
-        #    return
+
+        if len(messages) == 0:
+            return
 
         user_score_dict = dict()
 
@@ -47,8 +48,6 @@ class StatisticService:
             user_score_dict[score.user] = score
 
         last_user_list = []
-        last_msg = None
-
 
         for msg in messages:
             time_tz = TimeService.datetime_correct_tz(msg.time)
@@ -57,9 +56,9 @@ class StatisticService:
             if msg_time == stat.time:
                 if pattern in msg.text:
                     if msg.user not in user_score_dict:
-                        score = Score(user=msg.user, stat=stat)
-                        user_score_dict[msg.user] = score
-                    if msg_date != user_score_dict[msg.user].date:
+                        new_score = Score(user=msg.user, stat=stat)
+                        user_score_dict[msg.user] = new_score
+                    if msg_date > user_score_dict[msg.user].date:
                         user_score_dict[msg.user].points += 1
                         user_score_dict[msg.user].date = msg_date
                         if msg.user not in last_user_list:
@@ -71,9 +70,9 @@ class StatisticService:
 
         for score in user_score_dict.values():
             ScoreRepo.save(score)
-        if len(messages) != 0:
-            stat.last_msg_id = messages[-1].id
-            StatisticRepo.save(stat)
+
+        stat.last_msg_id = messages[-1].id
+        StatisticRepo.save(stat)
 
 
 
