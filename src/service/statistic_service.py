@@ -120,9 +120,9 @@ class StatisticService:
             if old_rank == index:
                 text += "⏹"
             elif old_rank < index:
-                text += "🔼"
-            elif old_rank > index:
                 text += "🔽"
+            elif old_rank > index:
+                text += "🔼"
 
             text += "\n"
             last_score = score.points
