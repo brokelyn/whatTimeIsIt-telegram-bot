@@ -106,7 +106,7 @@ class StatisticService:
             elif index == 3:
                 text += "🥉  " + user.first_name
             else:
-                text += str(index) + ". " + user.first_name
+                text += " " + str(index) + ".  " + user.first_name
 
             text += " " * (10 - len(user.first_name))
             text += str(score.points) + " " * (3 - len(str(score.points)))
