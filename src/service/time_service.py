@@ -1,5 +1,6 @@
-from datetime import datetime, time
+from datetime import datetime
 import pytz
+
 
 class TimeService:
 
@@ -31,12 +32,11 @@ class TimeService:
 
     @staticmethod
     def datetime_correct_tz(time: datetime) -> datetime:
-        ts = time.timestamp()
         tz = pytz.timezone("Europe/Berlin")
-        utc_time_off = tz.localize(datetime.utcfromtimestamp(ts))
+        utc_time_off = tz.localize(time.replace(tzinfo=None))
 
-        gamezone_time = utc_time_off + utc_time_off.utcoffset()
-        return gamezone_time.replace(tzinfo=None)  # remove offset
+        game_time = utc_time_off + utc_time_off.utcoffset()
+        return game_time.replace(tzinfo=None)  # remove offset
 
     @staticmethod
     def datetime_apply_tz(time: datetime) -> datetime:
