@@ -1,4 +1,5 @@
 from entity.message import Message
+from entity.statistic import Statistic
 
 from typing import List
 
@@ -18,8 +19,9 @@ class MessageRepo:
         return list(Message.select())
 
     @staticmethod
-    def findByIdIsGreater(id: int) -> List[Message]:
-        return list(Message.select().where(Message.id > id))
+    def findByStatistic(stat: Statistic) -> List[Message]:
+        return list(Message.select().where(Message.id > stat.last_msg_id,
+                                           Message.group == stat.group))
 
     @staticmethod
     def sameTimeSameUserMessageExists(msg) -> bool:
