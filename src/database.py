@@ -1,5 +1,8 @@
-import peewee, os
 import urllib.parse
+
+import os
+import peewee
+
 
 def connect_db():
     if 'HEROKU' not in os.environ:
