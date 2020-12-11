@@ -1,6 +1,3 @@
-import telegram
-from telegram.ext import CommandHandler, Updater
-
 
 class ScoreController:
 

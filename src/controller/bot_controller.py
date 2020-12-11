@@ -75,7 +75,7 @@ class BotController:
         help_page += "-'/remove_event' to remove a active event\n\n"
         help_page += "All text messages will be saved for analysing the scores. By participating"
         help_page += "in this group you accept this condition.\n\n"
-        help_page += "Check out the [Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot) framework"
+        # help_page += "Check out the [Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot) framework"
 
         context.bot.send_message(chat_id=update.message.chat_id, text=help_page,
                                  reply_markup=telegram.ReplyKeyboardRemove(),
