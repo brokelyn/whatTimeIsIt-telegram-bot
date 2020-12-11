@@ -25,8 +25,9 @@ def init():
     from entity.statistic import Statistic
     from entity.score import Score
     from entity.event import Event
+    from entity.group import Group
 
-    connection.create_tables([User, Message, Score, Statistic, Event])
+    connection.create_tables([User, Message, Group, Statistic, Score, Event])
 
 
 connection = connect_db()
