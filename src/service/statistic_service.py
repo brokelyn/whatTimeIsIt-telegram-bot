@@ -31,7 +31,7 @@ class StatisticService:
     @staticmethod
     def calc_stats(stat: Statistic):
         pattern = str(stat.time)
-        messages = MessageRepo.findByIdIsGreater(stat.last_msg_id)
+        messages = MessageRepo.findByStatistic(stat)
 
         if len(messages) == 0:
             return
@@ -78,7 +78,6 @@ class StatisticService:
 
         return -1
 
-
     @staticmethod
     def markdown_presentation(new_stats: Dict[User, Score], old_stats: Dict[User, Score], time: int) -> str:
         if len(new_stats.keys()) == 0:
@@ -121,8 +120,8 @@ class StatisticService:
         return text + "`"
 
     @staticmethod
-    def stats_to_time(time: int) -> str:
-        statistic = StatisticRepo.get_or_create(time)
+    def stats_to_time(group_id: int, time: int) -> str:
+        statistic = StatisticRepo.get_or_create(group_id, time)
 
         # get old score for comparison
         unsorted_old_scores = StatisticService.extract_scores_from_statistic(statistic)
