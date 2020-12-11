@@ -36,7 +36,7 @@ class UtilController:
 
         message = Message(user=user.id, msg_id=msg.message_id,
                           text=msg.text, chat_id=msg.chat.id,
-                          time=msg.date)
+                          time=msg.date.replace(tzinfo=None))
         MessageRepo.create(message)
 
     @staticmethod
