@@ -1,7 +1,6 @@
 from entity.message import Message
 
 from typing import List
-from datetime import datetime
 
 
 class MessageRepo:
@@ -15,7 +14,7 @@ class MessageRepo:
         msg.save()
 
     @staticmethod
-    def findAll():
+    def findAll() -> List[Message]:
         return list(Message.select())
 
     @staticmethod

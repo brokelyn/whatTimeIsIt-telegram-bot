@@ -4,15 +4,10 @@ from typing import Dict
 from entity.score import Score
 from entity.user import User
 from entity.statistic import Statistic
-from repo import user_repo
 from repo.score_repo import ScoreRepo
 from repo.message_repo import MessageRepo
 from repo.statistic_repo import StatisticRepo
 from service.time_service import TimeService
-
-import datetime
-
-
 
 
 class StatisticService:
@@ -36,16 +31,12 @@ class StatisticService:
     @staticmethod
     def calc_stats(stat: Statistic):
         pattern = str(stat.time)
-        scores = ScoreRepo.scores_to_stat(stat)
         messages = MessageRepo.findByIdIsGreater(stat.last_msg_id)
 
         if len(messages) == 0:
             return
 
-        user_score_dict = dict()
-
-        for score in scores:
-            user_score_dict[score.user] = score
+        user_score_dict = StatisticService.extract_scores_from_statistic(stat)
 
         last_user_list = []
 

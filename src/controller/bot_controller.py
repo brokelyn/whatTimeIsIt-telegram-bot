@@ -14,6 +14,7 @@ from service.event_service import EventService
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
+
 class BotController:
 
     def __init__(self):

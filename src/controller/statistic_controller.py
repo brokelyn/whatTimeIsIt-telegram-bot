@@ -13,26 +13,9 @@ class StatisticController:
         if len(context.args) <= 0:
             StatisticController.stats_keyboard(update, context)
         else:
-            time = TimeService.is_valid_time(context.args[0])
-            current_time = TimeService.datetime_correct_tz(datetime.now())
-            is_same_time = current_time.strftime("%H%M") == str(time)
-            if not time == -1 and not is_same_time:
-                board_text = StatisticService.stats_to_time(time)
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text=board_text, parse_mode="Markdown",
-                                         reply_markup=telegram.ReplyKeyboardRemove())
-            elif not time == -1 and is_same_time:
-                available_time = current_time.replace(minute=current_time.minute + 1)
-                available_time = available_time.strftime("%H:%M")
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Ist man in kleinen Dingen nicht geduldig, "
-                                              "bringt man die großen Vorhaben zum scheitern."
-                                              "\n\n Die neue Statistik ist erst um "
-                                              "" + available_time + " verfügbar.")
-            else:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text="Time request is invalid")
+            StatisticController.stats_by_input(update, context)
 
+    ####################################################################################################################
     @staticmethod
     def stats_keyboard(update, context):
         inline_keyboard = [[InlineKeyboardButton("1337 statistics", callback_data="stats 1337")],
@@ -49,6 +32,7 @@ class StatisticController:
         board_text = StatisticService.stats_to_time(stat_time)
         update.callback_query.message.edit_text(text=board_text, parse_mode="Markdown",
                                                 reply_markup=InlineKeyboardMarkup([]))
+    ####################################################################################################################
 
     @staticmethod
     def stats_by_job(context):
@@ -56,3 +40,27 @@ class StatisticController:
         context.bot.send_message(chat_id=context.job.context,
                                  text=text, parse_mode="Markdown",
                                  reply_markup=telegram.ReplyKeyboardRemove())
+
+    ####################################################################################################################
+
+    @staticmethod
+    def stats_by_input(update, context):
+        time = TimeService.is_valid_time(context.args[0])
+        current_time = TimeService.datetime_correct_tz(datetime.now())
+        is_same_time = current_time.strftime("%H%M") == str(time)
+        if not time == -1 and not is_same_time:
+            board_text = StatisticService.stats_to_time(time)
+            context.bot.send_message(chat_id=update.message.chat_id,
+                                     text=board_text, parse_mode="Markdown",
+                                     reply_markup=telegram.ReplyKeyboardRemove())
+        elif not time == -1 and is_same_time:
+            available_time = current_time.replace(minute=current_time.minute + 1)
+            available_time = available_time.strftime("%H:%M")
+            context.bot.send_message(chat_id=update.message.chat_id,
+                                     text="Ist man in kleinen Dingen nicht geduldig, "
+                                          "bringt man die großen Vorhaben zum scheitern."
+                                          "\n\n Die neue Statistik ist erst um "
+                                          "" + available_time + " verfügbar.")
+        else:
+            context.bot.send_message(chat_id=update.message.chat_id,
+                                     text="Time request is invalid")
