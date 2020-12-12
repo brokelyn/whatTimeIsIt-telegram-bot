@@ -14,19 +14,20 @@ class EventRepo:
         event.save()
 
     @staticmethod
-    def delete(time: int):
-        Event.delete().where(Event.time == time).execute()
+    def delete(group_id: int, time: int):
+        query = Event.delete().where(Event.group == group_id, Event.time == time)
+        if query.execute() == 0:
+            raise ReferenceError("Could not find object to delete: GroupId: " + group_id + ", Time: " + time)
+
 
     @staticmethod
-    def exists(time: int) -> bool:
-        query = Event.select().where(Event.time == time)
+    def exists(group_id: int, time: int) -> bool:
+        query = Event.select().where(Event.time == time, Event.group == group_id)
         return query.exists()
 
     @staticmethod
-    def delete_all():
-        all_events = EventRepo.findAll()
-        for event in all_events:
-            event.delete_instance()
+    def delete_all_for_group(group_id: int):
+        Event.delete().where(Event.group == group_id).execute()
 
     @staticmethod
     def findAll() -> List[Event]:
