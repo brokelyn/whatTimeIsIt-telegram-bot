@@ -85,4 +85,4 @@ class BotController:
     def init_events(job_queue):
         events = EventRepo.findAll()
         for event in events:
-            EventService.create_job(job_queue, event.chat_id, event.time)
+            EventService.create_job(job_queue, event.group_id, event.time)
