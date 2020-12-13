@@ -2,7 +2,6 @@ from entity.message import Message
 from entity.user import User
 from entity.group import Group
 from repo.message_repo import MessageRepo
-from repo.group_repo import GroupRepo
 from repo.user_repo import UserRepo
 from service.time_service import TimeService
 
@@ -12,22 +11,15 @@ class UtilController:
     @staticmethod
     def handle_text_msg(update, context):
         if update.message.chat.type != 'private':
-            if UtilController.time_check(update.message):
-                if not MessageRepo.sameTimeSameUserMessageExists(update.message):
-                    UtilController.persist_message(update.message)
-            else:
-                UtilController.wrong_time_action(update, context)
-
-    @staticmethod
-    def time_check(message) -> bool:
-        msg_text_time = TimeService.is_valid_time(message.text)
-        if msg_text_time != -1:
-            time_tz = TimeService.datetime_correct_tz(message.date)
-            msg_datetime = time_tz.strftime('%H%M')
-            if not msg_text_time == int(msg_datetime):
-                return False
-            else:
-                return True
+            msg_text_time = TimeService.is_valid_time(update.message.text)
+            if msg_text_time != -1:
+                time_tz = TimeService.datetime_correct_tz(update.message.date)
+                msg_datetime = time_tz.strftime('%H%M')
+                if msg_text_time == int(msg_datetime):
+                    if not MessageRepo.sameTimeSameUserMessageExists(update.message):
+                        UtilController.persist_message(update.message)
+                else:
+                    UtilController.wrong_time_action(update, context)
 
     @staticmethod
     def persist_message(msg):
