@@ -1,8 +1,13 @@
+import telegram
+import time
+import datetime
+
 from entity.message import Message
 from entity.user import User
 from entity.group import Group
 from repo.message_repo import MessageRepo
 from repo.user_repo import UserRepo
+from repo.group_repo import GroupRepo
 from service.time_service import TimeService
 
 
@@ -52,5 +57,22 @@ class UtilController:
     def wrong_time_action(update, context):
         msg = update.message
         msg.reply_text("The time '" + str(msg.text) + "' is wrong from " +
-                           msg.from_user.first_name + " " + msg.from_user.last_name + ".\n"
-                           + "Message timestamp:    " + msg.date.strftime('%H:%M:%S'))
+                       msg.from_user.first_name + " " + msg.from_user.last_name + ".\n"
+                       + "Message timestamp:    " + msg.date.strftime('%H:%M:%S'))
+
+        group = GroupRepo.get_or_none(msg.chat.id)
+        if group.auto_ban:
+            try:
+                if not group.invite_link:
+                    group.invite_link = context.bot.export_chat_invite_link(msg.chat.id)
+                    GroupRepo.save(group)
+
+                context.bot.send_message(msg.chat.id, text="Use this link " + group.invite_link + " to join after"
+                                                           " your ban has expired.")
+
+                time.sleep(1)
+
+                context.bot.kick_chat_member(chat_id=msg.chat.id, user_id=update.message.from_user.id, until_date=45)
+
+            except telegram.error.BadRequest:
+                context.bot.send_message(msg.chat.id, text="Not enough rights to ban group member")
