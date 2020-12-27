@@ -33,11 +33,11 @@ save the scores for the different times.
 
 The bot is currently under development. Every important game feature is implemented, but there is
 still stuff to improve. To see features of upcoming updates take a look in the issue section of Github.
-
 ## Getting started
 
 This application uses some external libraries which can be found in the `requirements.txt` file.
-First step is to install the `requirements.txt` with pip. After pip finishes his work you need to 
+First step is to install the `requirements.txt` with pip. The basic command is `pip3 install -r requirements.txt`
+After pip finishes his work you need to 
 set some environment variables.
 
 1. Your bot api key should be named: `BOT_API_KEY=`
