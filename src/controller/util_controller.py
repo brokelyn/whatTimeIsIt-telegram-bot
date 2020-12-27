@@ -36,8 +36,9 @@ class UtilController:
         group = Group(id=msg.chat.id, title=msg.chat.title)
         GroupRepo.create_if_not_exist(group)
 
-        message = Message(user=user.id, msg_id=msg.message_id,
-                          text=msg.text, chat_id=msg.chat.id,
+        message = Message(user=user.id,
+                          msg_id=msg.message_id,
+                          text=msg.text,
                           time=msg.date.replace(tzinfo=None),
                           group=group.id)
         MessageRepo.create(message)
