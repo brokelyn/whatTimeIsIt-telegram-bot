@@ -75,7 +75,7 @@ class UtilController:
 
                 send_msg = context.bot.send_message(chat_id=msg.chat.id, text=ban_text + "21 seconds")
 
-                for i in range(20, 0, -5):
+                for i in range(20, -1, -5):
                     context.bot.edit_message_text(chat_id=msg.chat.id,
                                                   message_id=send_msg.message_id,
                                                   text=ban_text + str(i) + " seconds")
