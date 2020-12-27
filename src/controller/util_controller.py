@@ -57,8 +57,8 @@ class UtilController:
     def wrong_time_action(update, context):
         msg = update.message
         msg.reply_text("The time '" + str(msg.text) + "' is wrong from " +
-                       msg.from_user.first_name + " " + msg.from_user.last_name + ".\n"
-                       + "Message timestamp:    " + msg.date.strftime('%H:%M:%S'))
+                       msg.from_user.first_name + ".\n" + "Message timestamp:  "
+                       + msg.date.strftime('%H:%M:%S'))
 
         restrict_duration = TimeService.timedelta_until_next_day()
 
@@ -80,7 +80,7 @@ class UtilController:
                 for i in range(20, -1, -5):
                     context.bot.edit_message_text(chat_id=msg.chat.id,
                                                   message_id=send_msg.message_id,
-                                                  text=ban_text + "\n\nYou will be banned in" + str(i) + " seconds")
+                                                  text=ban_text + "\n\nYou will be banned in " + str(i) + " seconds")
                     time.sleep(5)  # dont update too often due to flood protection
 
                 context.bot.edit_message_text(chat_id=msg.chat.id, message_id=send_msg.message_id, text=ban_text)
