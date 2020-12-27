@@ -5,7 +5,7 @@ import peewee
 
 
 def connect_db():
-    if 'HEROKU' not in os.environ:
+    if 'DATABASE_URL' not in os.environ:
         db = peewee.SqliteDatabase('WhatTimeIsIt.db', autorollback=True, autocommit=True)
         print("Local SQLite DB active")
     else:
@@ -15,7 +15,7 @@ def connect_db():
                                        password=url.password, host=url.hostname,
                                        port=url.port, sslmode="require",
                                        autorollback=True, autocommit=True)
-        print("Heroku Postgres DB active")
+        print("Postgres DB active")
     return db
 
 
