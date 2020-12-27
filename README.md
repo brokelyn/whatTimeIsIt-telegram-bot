@@ -29,6 +29,11 @@ We use the database SQLite and the ORM peewee because both are lightweight and e
 This database is used to persist all incoming *Text Messages* and later
 save the scores for the different times. 
 
+### Updates
+
+The bot is currently under development. Every important game feature is implemented, but there is
+still stuff to improve. To see features of upcoming updates take a look in the issue section of Github.
+
 ## Getting started
 
 This application uses some external libraries which can be found in the `requirements.txt` file.
