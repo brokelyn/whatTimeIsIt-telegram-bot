@@ -29,7 +29,8 @@ class StatisticController:
     @staticmethod
     def stats_callback(update, context):
         stat_time = update.callback_query.data.split(" ")[1]
-        board_text = StatisticService.stats_to_time(stat_time)
+        group_id = update.callback_query.message.chat.id
+        board_text = StatisticService.stats_to_time(int(group_id), int(stat_time))
         update.callback_query.message.edit_text(text=board_text, parse_mode="Markdown",
                                                 reply_markup=InlineKeyboardMarkup([]))
     ####################################################################################################################
