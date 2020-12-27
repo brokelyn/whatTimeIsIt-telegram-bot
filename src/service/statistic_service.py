@@ -38,12 +38,20 @@ class StatisticService:
 
         user_score_dict = StatisticService.extract_scores_from_statistic(stat)
 
+        curr_date = int(TimeService.datetime_correct_tz(messages[0].time).strftime('%Y%m%d'))
         last_user_list = []
 
         for msg in messages:
             time_tz = TimeService.datetime_correct_tz(msg.time)
             msg_date: int = int(time_tz.strftime('%Y%m%d'))
             msg_time: int = int(time_tz.strftime('%H%M'))
+
+            if msg_date != curr_date:
+                if len(last_user_list) > 1:
+                    user_score_dict[last_user_list[-1]].points += 1
+                last_user_list = []
+                curr_date = msg_date
+
             if msg_time == stat.time:
                 if pattern in msg.text:
                     if msg.user not in user_score_dict:
@@ -53,8 +61,7 @@ class StatisticService:
                         user_score_dict[msg.user].points += 1
                         user_score_dict[msg.user].date = msg_date
                         if msg.user not in last_user_list:
-                            last_msg = msg
-                            last_user_list.append(last_msg.user)
+                            last_user_list.append(msg.user)
 
         if len(last_user_list) > 1:
             user_score_dict[last_user_list[-1]].points += 1
