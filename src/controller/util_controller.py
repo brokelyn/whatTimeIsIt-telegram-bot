@@ -71,15 +71,19 @@ class UtilController:
 
                 ban_text = "Your ban will last for " + str(restrict_duration) + \
                            "\n\nUse this link " + group.invite_link + \
-                           " to join after your ban has expired.\n\nYou will be banned in "
+                           " to join after your ban has expired."
 
-                send_msg = context.bot.send_message(chat_id=msg.chat.id, text=ban_text + "21 seconds")
+                send_msg = context.bot.send_message(chat_id=msg.chat.id,
+                                                    text=ban_text + "\n\nYou will be banned in 21 seconds")
+                time.sleep(1)
 
                 for i in range(20, -1, -5):
                     context.bot.edit_message_text(chat_id=msg.chat.id,
                                                   message_id=send_msg.message_id,
-                                                  text=ban_text + str(i) + " seconds")
+                                                  text=ban_text + "\n\nYou will be banned in" + str(i) + " seconds")
                     time.sleep(5)  # dont update too often due to flood protection
+
+                context.bot.edit_message_text(chat_id=msg.chat.id, message_id=send_msg.message_id, text=ban_text)
 
                 context.bot.kick_chat_member(chat_id=msg.chat.id,
                                              user_id=update.message.from_user.id,
