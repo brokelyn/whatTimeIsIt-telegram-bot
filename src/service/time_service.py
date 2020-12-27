@@ -1,8 +1,17 @@
 from datetime import datetime
+from datetime import timedelta
 import pytz
 
 
 class TimeService:
+
+    @staticmethod
+    def timedelta_until_next_day() -> timedelta:
+        dt = datetime.now()
+        dt_tomorrow = dt.replace(hour=0, minute=0, second=0)
+        dt_tomorrow = dt_tomorrow + timedelta(days=1)
+
+        return dt_tomorrow - dt
 
     @staticmethod
     def is_valid_time(time_str: str, modulo=True) -> int:

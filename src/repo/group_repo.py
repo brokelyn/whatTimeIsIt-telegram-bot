@@ -18,8 +18,14 @@ class GroupRepo:
             GroupRepo.create(group)
 
     @staticmethod
-    def get_or_none(id: int) -> Group:
-        return Group.get_or_none(Group.id == id)
+    def get_or_create(id: int, title: str) -> Group:
+        group = Group.get_or_none(Group.id == id)
+        if group is not None:
+            return group
+        else:
+            group = Group(id=id, title=title)
+            GroupRepo.create(group)
+            return group
 
     @staticmethod
     def findAll():
