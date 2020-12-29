@@ -89,7 +89,7 @@ class StatisticService:
     def markdown_presentation(new_stats: Dict[User, Score], old_stats: Dict[User, Score], time: int) -> str:
         if len(new_stats.keys()) == 0:
             return "Sadly there are no scores for event '" + str(time) + "'"
-        text = "*Scoreboard for event:* " + str(time) + "\n\n`"
+        text = "*Scoreboard for time   *" + str(time) + "\n\n`"
 
         index = 0
         last_score = -1
@@ -116,10 +116,10 @@ class StatisticService:
             old_rank = StatisticService.get_statistic_rank(old_stats, user)
             if old_rank == index:
                 text += "⏹"
+            elif old_rank > index or old_rank == -1:
+                text += "🔼"
             elif old_rank < index:
                 text += "🔽"
-            elif old_rank > index:
-                text += "🔼"
 
             text += "\n"
             last_score = score.points
