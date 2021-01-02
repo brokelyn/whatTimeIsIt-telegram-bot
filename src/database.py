@@ -5,17 +5,21 @@ import peewee
 
 
 def connect_db():
-    if 'DATABASE_URL' not in os.environ:
-        db = peewee.SqliteDatabase('WhatTimeIsIt.db', autorollback=True, autocommit=True)
-        print("Local SQLite DB active")
-    else:
+    if 'SQLITE_FILE' in os.environ:
+        db = peewee.SqliteDatabase(os.environ["SQLITE_FILE"], autorollback=True, autocommit=True)
+        print("SQLite database active")
+    elif 'DATABASE_URL' in os.environ:
         urllib.parse.uses_netloc.append('postgres')
         url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
         db = peewee.PostgresqlDatabase(database=url.path[1:], user=url.username,
                                        password=url.password, host=url.hostname,
                                        port=url.port, sslmode="require",
                                        autorollback=True, autocommit=True)
-        print("Postgres DB active")
+        print("Postgres database active")
+    else:
+        print("No database environment defined!")
+        exit(0)
+
     return db
 
 
