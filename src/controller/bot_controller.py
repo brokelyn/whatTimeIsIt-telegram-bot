@@ -6,6 +6,7 @@ from telegram.ext import MessageHandler, Filters
 
 from controller.event_controller import EventController
 from controller.statistic_controller import StatisticController
+from controller.group_controller import GroupController
 from controller.util_controller import UtilController
 from repo.event_repo import EventRepo
 from service.event_service import EventService
@@ -35,6 +36,9 @@ class BotController:
 
         remove_event_handler = CommandHandler('remove_event', EventController.remove_event)
         dispatcher.add_handler(remove_event_handler)
+
+        groups_event_handler = CommandHandler('groups', GroupController.display_groups)
+        dispatcher.add_handler(groups_event_handler)
 
         callback_rmv_event = CallbackQueryHandler(EventController.rmv_event_callback,
                                                   pattern='rmv_event')
