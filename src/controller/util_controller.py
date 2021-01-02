@@ -44,7 +44,7 @@ class UtilController:
         MessageRepo.create(message)
 
     @staticmethod
-    def message_time(update):
+    def message_time(update, context):
         rpl_msg = update.message.reply_to_message
         if rpl_msg:
             msg_time = TimeService.datetime_correct_tz(rpl_msg.date)
