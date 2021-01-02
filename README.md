@@ -41,9 +41,10 @@ After pip finishes his work you need to
 set some environment variables.
 
 1. Your bot api key should be named: `BOT_API_KEY=`
-2. A database url if you use an external db: `DATABASE_URL=`
-   Do not set this variable when working in dev mode. If this variable is not set the program will create a local SQLite 
-   database in the src directory.
+2.1. A SQLite file reference with an absolute path : `SQLITE_FILE=`
+2.2. Or a database url if you use an external db: `DATABASE_URL=`
+
+When developing the usage of an SQLite database is recommended
 
 Then you should be able to start the application by calling `python3 main.py`
 in the `src` folder of the project.
