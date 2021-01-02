@@ -28,5 +28,9 @@ class GroupRepo:
             return group
 
     @staticmethod
+    def get_or_none(id: int) -> Group:
+        return Group.get_or_none(Group.id == id)
+
+    @staticmethod
     def findAll():
         return list(Group.select())
