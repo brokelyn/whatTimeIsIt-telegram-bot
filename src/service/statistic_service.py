@@ -88,7 +88,7 @@ class StatisticService:
     @staticmethod
     def markdown_presentation(new_stats: Dict[User, Score], old_stats: Dict[User, Score], time: int) -> str:
         if len(new_stats.keys()) == 0:
-            return "Sadly there are no scores for event '" + str(time) + "'"
+            return "There are no scores for time '" + str(time) + "'"
         text = "*Scoreboard for time   *" + str(time) + "\n\n`"
 
         index = 0

@@ -1,36 +1,41 @@
 import telegram
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import InlineKeyboardMarkup
 from datetime import datetime
 
 from service.statistic_service import StatisticService
 from service.time_service import TimeService
+from controller.group_controller import GroupController
+from repo.group_repo import GroupRepo
 
 
 class StatisticController:
 
     @staticmethod
     def stats(update, context):
-        if len(context.args) <= 0:
-            StatisticController.stats_keyboard(update, context)
+        if len(context.args) == 0:
+            context.bot.send_message(chat_id=update.message.chat_id, text="Usage '/stats <4 numbers>'")
         else:
-            StatisticController.stats_by_input(update, context)
+            time = TimeService.is_valid_time(context.args[0])
+            chat_id = update.message.chat_id
+            if StatisticController.time_check(context.bot, chat_id, time):
+                if update.message.chat.type == 'private':
+                    GroupController.group_selection(context.bot, chat_id, "stats", str(time))
+                else:
+                    board_text = StatisticService.stats_to_time(chat_id, time)
+
+                    context.bot.send_message(chat_id=chat_id,
+                                             text=board_text, parse_mode="Markdown",
+                                             reply_markup=telegram.ReplyKeyboardRemove())
 
     ####################################################################################################################
     @staticmethod
-    def stats_keyboard(update, context):
-        inline_keyboard = [[InlineKeyboardButton("1337 statistics", callback_data="stats 1337")],
-                           [InlineKeyboardButton("1111 statistics", callback_data="stats 1111")],
-                           [InlineKeyboardButton("2222 statistics", callback_data="stats 2222")],
-                           [InlineKeyboardButton("0000 statistics", callback_data="stats 0000")]]
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Choose a stat or request a custom by '/stats <4 numbers>'",
-                                 reply_markup=InlineKeyboardMarkup(inline_keyboard))
+    def stats_to_callback(update, context):
+        stat_time = update.callback_query.data.split(" ")[2]
+        group_id = update.callback_query.data.split(" ")[3]
+        group = GroupRepo.get_or_none(group_id)
 
-    @staticmethod
-    def stats_callback(update, context):
-        stat_time = update.callback_query.data.split(" ")[1]
-        group_id = update.callback_query.message.chat.id
         board_text = StatisticService.stats_to_time(int(group_id), int(stat_time))
+        board_text = "Group: *" + group.title + "*\n\n" + board_text
         update.callback_query.message.edit_text(text=board_text, parse_mode="Markdown",
                                                 reply_markup=InlineKeyboardMarkup([]))
     ####################################################################################################################
@@ -45,25 +50,20 @@ class StatisticController:
     ####################################################################################################################
 
     @staticmethod
-    def stats_by_input(update, context):
-        time = TimeService.is_valid_time(context.args[0])
+    def time_check(bot, replay_chat_id, time) -> bool:
         current_time = TimeService.datetime_correct_tz(datetime.now())
         is_same_time = current_time.strftime("%H%M") == str(time)
+
         if not time == -1 and not is_same_time:
-            group_id = update.message.chat_id
-            board_text = StatisticService.stats_to_time(group_id, time)
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text=board_text, parse_mode="Markdown",
-                                     reply_markup=telegram.ReplyKeyboardRemove())
+            return True
         elif not time == -1 and is_same_time:
-            available_time = current_time.replace(minute=current_time.minute + 1)
-            available_time = available_time.strftime("%H:%M")
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     reply_markup=telegram.ReplyKeyboardRemove(),
-                                     text="Ist man in kleinen Dingen nicht geduldig, "
-                                          "bringt man die großen Vorhaben zum scheitern."
-                                          "\n\n Die neue Statistik ist erst um "
-                                          "" + available_time + " verfügbar.")
+            available_time = current_time.replace(minute=current_time.minute + 1).strftime("%H:%M")
+            bot.send_message(chat_id=replay_chat_id,
+                             text="Ist man in kleinen Dingen nicht geduldig, "
+                                  "bringt man die großen Vorhaben zum scheitern."
+                                  "\n\n Die neue Statistik ist erst um "
+                                  "" + available_time + " verfügbar.")
         else:
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text="Time request is invalid")
+            bot.send_message(chat_id=replay_chat_id,
+                             text="Time request '" + time + "' is invalid")
+        return False
