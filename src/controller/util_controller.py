@@ -14,14 +14,18 @@ class UtilController:
 
     @staticmethod
     def handle_text_msg(update, context):
-        if update.message.chat.type != 'private':
-            msg_text_time = TimeService.is_valid_time(update.message.text)
+        msg = update.message
+
+        if msg.chat.type != 'private':
+            msg_text_time = TimeService.is_valid_time(msg.text)
             if msg_text_time != -1:
-                time_tz = TimeService.datetime_correct_tz(update.message.date)
+                time_tz = TimeService.datetime_correct_tz(msg.date)
                 msg_datetime = time_tz.strftime('%H%M')
                 if msg_text_time == int(msg_datetime):
-                    if not MessageRepo.sameTimeSameUserMessageExists(update.message):
-                        UtilController.persist_message(update.message)
+                    if not MessageRepo.sameTimeSameUserMessageExists(msg):
+                        UtilController.persist_message(msg)
+                    group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
+
                 else:
                     UtilController.wrong_time_action(update, context)
 
