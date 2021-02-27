@@ -33,4 +33,4 @@ class GroupController:
                                      text=reply_text)
         else:
             context.bot.send_message(chat_id=update.message.chat_id,
-                                     text="Your are in a group...")
+                                     text="Cannot list groups in groups...")
