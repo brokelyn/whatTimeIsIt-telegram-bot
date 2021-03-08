@@ -1,5 +1,6 @@
 import telegram
 import time
+import datetime
 
 from entity.message import Message
 from entity.user import User
@@ -113,7 +114,7 @@ class UtilController:
 
                 time.sleep(1)
 
-                unban_date = datetime.utcnow() + restrict_duration
+                unban_date = datetime.datetime.utcnow() + restrict_duration
 
                 context.bot.restrict_chat_member(chat_id=msg.chat.id,
                                                  user_id=update.message.from_user.id,
