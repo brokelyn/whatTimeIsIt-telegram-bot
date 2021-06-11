@@ -5,14 +5,14 @@ The goal is to write `1337` at the time 13:37. If you do so, you get one point.
 The member with the most points at the end of the year wins the game.
 
 It is legal to post any other time to the group. If you post the wrong time as example `1337` at 13:38
-you will receive a punishment until the next day. This punishment can be a group ban or 
+you will receive a punishment until the next day. This punishment can be a group ban or
 limited rights to interact with the group.
 
 # Messenger Bot
 
 ## Counting
 
-Because counting the scores is a boring task a bot should do this. The bot can count score for 
+Because counting the scores is a boring task a bot should do this. The bot can count score for
 multiple groups and users at once. Users can be in multiple groups as well.
 
 ## Implementation
@@ -27,7 +27,7 @@ according to those messages and messages from the past.
 
 We use the database SQLite and the ORM peewee because both are lightweight and easy to understand.
 This database is used to persist all incoming *Text Messages* and later
-save the scores for the different times. 
+save the scores for the different times.
 
 ### Updates
 
@@ -37,12 +37,12 @@ still stuff to improve. To see features of upcoming updates take a look in the i
 
 This application uses some external libraries which can be found in the `requirements.txt` file.
 First step is to install the `requirements.txt` with pip. The basic command is `pip3 install -r requirements.txt`
-After pip finishes his work you need to 
+After pip finishes his work you need to
 set some environment variables.
 
 1. Your bot api key should be named: `BOT_API_KEY=`
-2.1. A SQLite file reference with an absolute path : `SQLITE_FILE=`
-2.2. Or a database url if you use an external db: `DATABASE_URL=`
+2. A SQLite file reference with an absolute path : `SQLITE_FILE=`
+3. Or a database url if you use an external db: `DATABASE_URL=`
 
 When developing the usage of an SQLite database is recommended
 
@@ -72,6 +72,6 @@ developer to create their own bots for different kinds of usage.
 
 ### Python-Telegram-Bot
 
-In this project we are using a framework from github which implements
-the telegram api. Thanks for this awesome framework!
+We are using a project from Github which implements
+the Telegram API for python. Thanks for this awesome project!
 Link to them https://github.com/python-telegram-bot/python-telegram-bot
