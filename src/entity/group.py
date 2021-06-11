@@ -8,5 +8,5 @@ class Group(BaseEntity):
     title = peewee.TextField()
     auto_events = peewee.BooleanField(default=False)
     violation_action = peewee.CharField(16, default="ban")
-    timezone = peewee.TextField(null=True)
+    timezone = peewee.TextField(null=True, default="UTC")
     invite_link = peewee.TextField(null=True)

@@ -1,6 +1,7 @@
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 from repo.group_repo import GroupRepo
+import service.util_service as UtilService
 
 
 class GroupController:
@@ -34,3 +35,30 @@ class GroupController:
         else:
             context.bot.send_message(chat_id=update.message.chat_id,
                                      text="Cannot list groups in groups...")
+
+    @staticmethod
+    def group_settings(update, context):
+        msg = update.message
+
+        if UtilService.is_private_chat(msg, context.bot):
+            return
+
+        group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
+
+        keyboard = list()
+
+        text = "Violation Action:  " + group.violation_action
+        callback_data = "settings violation_action"
+        keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
+
+        text = "Timezone:  " + group.timezone
+        callback_data = "settings timezone"
+        keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
+
+        text = "Show Invite Link"
+        callback_data = "settings invite_link"
+        keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
+
+        context.bot.send_message(chat_id=msg.chat_id,
+                                 text="Group: " + group.title,
+                                 reply_markup=InlineKeyboardMarkup(keyboard))
