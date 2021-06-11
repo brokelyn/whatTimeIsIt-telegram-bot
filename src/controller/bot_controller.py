@@ -19,7 +19,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 class BotController:
 
     def __init__(self):
-        updater = Updater(token=os.environ['BOT_API_KEY'], use_context=True)  # used in version 12
+        updater = Updater(token=os.environ['TELEGRAM_BOT_API_KEY'], use_context=True)  # used in version 12
         dispatcher = updater.dispatcher
 
         stat_handler = CommandHandler('stats', StatisticController.stats)
