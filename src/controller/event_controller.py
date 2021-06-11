@@ -1,6 +1,7 @@
 import telegram
 from telegram import InlineKeyboardMarkup
 
+import service.util_service as UtilService
 from service.time_service import TimeService
 from service.event_service import EventService
 
@@ -9,6 +10,9 @@ class EventController:
 
     @staticmethod
     def add_event(update, context):
+        if UtilService.is_private_chat(update.message, context.bot):
+            return
+
         if len(context.args) <= 0:
             EventController.add_keyboard(update, context)
         else:
@@ -43,6 +47,9 @@ class EventController:
 
     @staticmethod
     def remove_event(update, context):
+        if UtilService.is_private_chat(update.message, context.bot):
+            return
+
         keyboard = EventService.rmv_event_keyboard(context.job_queue, update.message.chat_id)
         if len(keyboard) == 0:
             context.bot.send_message(chat_id=update.message.chat_id,
@@ -75,6 +82,9 @@ class EventController:
 
     @staticmethod
     def events(update, context):
+        if UtilService.is_private_chat(update.message, context.bot):
+            return
+
         active_jobs = EventService.active_jobs(context.job_queue, update.message.chat_id)
         if len(active_jobs) == 0:
             context.bot.send_message(chat_id=update.message.chat_id, text="There are no active events")
