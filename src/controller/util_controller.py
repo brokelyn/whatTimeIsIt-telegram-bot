@@ -1,6 +1,7 @@
 import telegram
 import time
 import datetime
+from datetime import timedelta
 
 from entity.message import Message
 from entity.user import User
@@ -59,6 +60,64 @@ class UtilController:
             update.message.reply_text("Please reply to a message to see its timestamp")
 
     @staticmethod
+    def ban_action(context, restrict_duration: timedelta, group: Group, msg):
+        try:
+            if not group.invite_link:
+                group.invite_link = context.bot.export_chat_invite_link(msg.chat.id)
+                GroupRepo.save(group)
+
+            ban_text = "Your ban will last for " + str(restrict_duration) + \
+                    "\n\nUse this link " + group.invite_link + \
+                    " to join after your ban has expired."
+
+            send_msg = context.bot.send_message(chat_id=msg.chat.id,
+                                                text=ban_text + "\n\nYou will be banned in 21 seconds")
+            time.sleep(1)
+
+            for i in range(20, 5, -5):
+                context.bot.edit_message_text(chat_id=msg.chat.id,
+                                            message_id=send_msg.message_id,
+                                            text=ban_text + "\n\nYou will be banned in " + str(i) + " seconds")
+                time.sleep(5)  # dont update too often due to flood protection
+
+            context.bot.edit_message_text(chat_id=msg.chat.id, message_id=send_msg.message_id, text=ban_text)
+
+            context.bot.kick_chat_member(chat_id=msg.chat.id,
+                                        user_id=msg.from_user.id,
+                                        until_date=restrict_duration.total_seconds())
+
+        except telegram.error.BadRequest:
+            context.bot.send_message(msg.chat.id, text="Not enough rights to ban group member")
+
+    @staticmethod
+    def permission_action(context, restrict_duration: timedelta, msg):
+        try:
+            permissions = telegram.ChatPermissions()
+            permissions.can_send_polls = False
+            permissions.can_add_web_page_previews = False
+            permissions.can_change_info = False
+            permissions.can_invite_users = False
+            permissions.can_pin_messages = False
+            permissions.can_send_media_messages = False
+            permissions.can_send_messages = False
+            permissions.can_send_other_messages = False
+
+            context.bot.send_message(msg.chat.id, text="Your rights will be removed for "
+                                                       + str(restrict_duration) + "!")
+
+            time.sleep(1)
+
+            unban_date = datetime.datetime.utcnow() + restrict_duration
+
+            context.bot.restrict_chat_member(chat_id=msg.chat.id,
+                                             user_id=msg.from_user.id,
+                                             until_date=unban_date,
+                                             permissions=permissions)
+
+        except telegram.error.BadRequest:
+            context.bot.send_message(msg.chat.id, text="Not enough rights to restrict permission of group member")
+
+    @staticmethod
     def wrong_time_action(update, context):
         msg = update.message
         msg.reply_text("The time '" + str(msg.text) + "' is wrong from " +
@@ -69,57 +128,7 @@ class UtilController:
 
         group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
         if group.violation_action == "ban":
-            try:
-                if not group.invite_link:
-                    group.invite_link = context.bot.export_chat_invite_link(msg.chat.id)
-                    GroupRepo.save(group)
-
-                ban_text = "Your ban will last for " + str(restrict_duration) + \
-                           "\n\nUse this link " + group.invite_link + \
-                           " to join after your ban has expired."
-
-                send_msg = context.bot.send_message(chat_id=msg.chat.id,
-                                                    text=ban_text + "\n\nYou will be banned in 21 seconds")
-                time.sleep(1)
-
-                for i in range(20, -1, -5):
-                    context.bot.edit_message_text(chat_id=msg.chat.id,
-                                                  message_id=send_msg.message_id,
-                                                  text=ban_text + "\n\nYou will be banned in " + str(i) + " seconds")
-                    time.sleep(5)  # dont update too often due to flood protection
-
-                context.bot.edit_message_text(chat_id=msg.chat.id, message_id=send_msg.message_id, text=ban_text)
-
-                context.bot.kick_chat_member(chat_id=msg.chat.id,
-                                             user_id=update.message.from_user.id,
-                                             until_date=restrict_duration.total_seconds())
-
-            except telegram.error.BadRequest:
-                context.bot.send_message(msg.chat.id, text="Not enough rights to ban group member")
+            UtilController.ban_action(context, restrict_duration, group, msg)
 
         elif group.violation_action == 'permission':
-            try:
-                permissions = telegram.ChatPermissions()
-                permissions.can_send_polls = False
-                permissions.can_add_web_page_previews = False
-                permissions.can_change_info = False
-                permissions.can_invite_users = False
-                permissions.can_pin_messages = False
-                permissions.can_send_media_messages = False
-                permissions.can_send_messages = False
-                permissions.can_send_other_messages = False
-
-                context.bot.send_message(msg.chat.id, text="Your rights will be removed for "
-                                                           + str(restrict_duration) + "!")
-
-                time.sleep(1)
-
-                unban_date = datetime.datetime.utcnow() + restrict_duration
-
-                context.bot.restrict_chat_member(chat_id=msg.chat.id,
-                                                 user_id=update.message.from_user.id,
-                                                 until_date=unban_date,
-                                                 permissions=permissions)
-
-            except telegram.error.BadRequest:
-                context.bot.send_message(msg.chat.id, text="Not enough rights to restrict permission of group member")
+            UtilController.permission_action(context, restrict_duration, msg)
