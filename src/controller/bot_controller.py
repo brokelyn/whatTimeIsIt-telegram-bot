@@ -43,6 +43,10 @@ class BotController:
         group_settings_event_handler = CommandHandler('settings', GroupController.group_settings)
         dispatcher.add_handler(group_settings_event_handler)
 
+        callback_settings = CallbackQueryHandler(GroupController.group_settings_callback,
+                                                  pattern='settings')
+        dispatcher.add_handler(callback_settings)
+
         callback_rmv_event = CallbackQueryHandler(EventController.rmv_event_callback,
                                                   pattern='rmv_event')
         dispatcher.add_handler(callback_rmv_event)

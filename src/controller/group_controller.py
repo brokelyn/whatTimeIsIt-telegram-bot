@@ -2,6 +2,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 from repo.group_repo import GroupRepo
 import service.util_service as UtilService
+import service.group_service as GroupService
 
 
 class GroupController:
@@ -37,6 +38,38 @@ class GroupController:
                                      text="Cannot list groups in groups...")
 
     @staticmethod
+    def group_settings_callback(update, context):
+        group_id = update.callback_query.message.chat.id
+        query_sections = update.callback_query.data.split(" ")
+        command = query_sections[1] if len(query_sections) > 1 else ""
+        group = GroupRepo.get_or_none(group_id)
+
+        text = "Group: " + group.title + "\n"
+        keyboard = GroupService.group_settings_keyboard(group)
+
+        if command == "violation_action":
+            group = GroupService.change_violation_action(group_id)
+            keyboard = GroupService.group_settings_keyboard(group)
+
+        elif command == "invite_link":
+            text = "Group invite link: " + group.invite_link
+            keyboard = None
+
+        elif command == "select_timezone":
+            if len(query_sections) > 2:
+                keyboard = GroupService.timezone_keyboard(query_sections[2])
+            else:
+                keyboard = GroupService.timezone_keyboard()
+            text = "Select a new timezone: \n"
+
+        elif command == "set_timezone":
+            group = GroupService.set_timezone(group_id, query_sections[2])
+            keyboard = GroupService.group_settings_keyboard(group)
+
+        update.callback_query.message.edit_text(text=text,
+                                                reply_markup=keyboard)
+
+    @staticmethod
     def group_settings(update, context):
         msg = update.message
 
@@ -45,20 +78,8 @@ class GroupController:
 
         group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
 
-        keyboard = list()
-
-        text = "Violation Action:  " + group.violation_action
-        callback_data = "settings violation_action"
-        keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
-
-        text = "Timezone:  " + group.timezone
-        callback_data = "settings timezone"
-        keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
-
-        text = "Show Invite Link"
-        callback_data = "settings invite_link"
-        keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
+        keyboard = GroupService.group_settings_keyboard(group)
 
         context.bot.send_message(chat_id=msg.chat_id,
                                  text="Group: " + group.title,
-                                 reply_markup=InlineKeyboardMarkup(keyboard))
+                                 reply_markup=keyboard)
