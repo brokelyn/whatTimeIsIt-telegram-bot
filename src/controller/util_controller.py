@@ -21,12 +21,12 @@ class UtilController:
         if msg.chat.type != 'private':
             msg_text_time = TimeService.is_valid_time(msg.text)
             if msg_text_time != -1:
-                time_tz = TimeService.datetime_correct_tz(msg.date)
+                group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
+                time_tz = TimeService.datetime_correct_tz(msg.date, group.timezone)
                 msg_datetime = time_tz.strftime('%H%M')
                 if msg_text_time == int(msg_datetime):
                     if not MessageRepo.sameTimeSameUserMessageExists(msg):
                         UtilController.persist_message(msg)
-                    group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
 
                 else:
                     UtilController.wrong_time_action(update, context)
@@ -52,8 +52,9 @@ class UtilController:
     @staticmethod
     def message_time(update, context):
         rpl_msg = update.message.reply_to_message
+        group = GroupRepo.get_or_none(rpl_msg.chat.id)
         if rpl_msg:
-            msg_time = TimeService.datetime_correct_tz(rpl_msg.date)
+            msg_time = TimeService.datetime_correct_tz(rpl_msg.date, group.timezone)
             rpl_msg.reply_text("Timestamp of this message is:\n" +
                                msg_time.strftime('%H:%M:%S at %d.%m.%Y'))
         else:
@@ -120,13 +121,14 @@ class UtilController:
     @staticmethod
     def wrong_time_action(update, context):
         msg = update.message
+        group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
+        msg_ts_corrected = TimeService.datetime_correct_tz(msg.date, group.timezone)
         msg.reply_text("The time '" + str(msg.text) + "' is wrong from " +
                        msg.from_user.first_name + ".\n" + "Message timestamp:  "
-                       + msg.date.strftime('%H:%M:%S'))
+                       + msg_ts_corrected.strftime('%H:%M:%S'))
 
         restrict_duration = TimeService.timedelta_until_next_day()
 
-        group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
         if group.violation_action == "ban":
             UtilController.ban_action(context, restrict_duration, group, msg)
 

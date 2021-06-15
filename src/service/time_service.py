@@ -40,16 +40,16 @@ class TimeService:
             return time
 
     @staticmethod
-    def datetime_correct_tz(time: datetime) -> datetime:
-        tz = pytz.timezone("Europe/Berlin")
+    def datetime_correct_tz(time: datetime, timezone: str) -> datetime:
+        tz = pytz.timezone(timezone)
         utc_time_off = tz.localize(time.replace(tzinfo=None))
 
         game_time = utc_time_off + utc_time_off.utcoffset()
         return game_time.replace(tzinfo=None)  # remove offset
 
     @staticmethod
-    def datetime_apply_tz(time: datetime) -> datetime:
-        tz = pytz.timezone("Europe/Berlin")
+    def datetime_apply_tz(time: datetime, timezone: str) -> datetime:
+        tz = pytz.timezone(timezone)
         time_off = tz.localize(time)
 
         return time_off
