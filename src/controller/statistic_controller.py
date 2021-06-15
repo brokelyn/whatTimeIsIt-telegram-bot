@@ -50,20 +50,21 @@ class StatisticController:
     ####################################################################################################################
 
     @staticmethod
-    def time_check(bot, replay_chat_id, time) -> bool:
-        current_time = TimeService.datetime_correct_tz(datetime.now())
+    def time_check(bot, reply_chat_id, time) -> bool:
+        group = GroupRepo.get_or_none(reply_chat_id)
+        current_time = TimeService.datetime_correct_tz(datetime.utcnow(), group.timezone)
         is_same_time = current_time.strftime("%H%M") == str(time)
 
         if not time == -1 and not is_same_time:
             return True
         elif not time == -1 and is_same_time:
             available_time = current_time.replace(minute=current_time.minute + 1).strftime("%H:%M")
-            bot.send_message(chat_id=replay_chat_id,
+            bot.send_message(chat_id=reply_chat_id,
                              text="Ist man in kleinen Dingen nicht geduldig, "
                                   "bringt man die großen Vorhaben zum scheitern."
                                   "\n\n Die neue Statistik ist erst um "
                                   "" + available_time + " verfügbar.")
         else:
-            bot.send_message(chat_id=replay_chat_id,
+            bot.send_message(chat_id=reply_chat_id,
                              text="Time request '" + time + "' is invalid")
         return False

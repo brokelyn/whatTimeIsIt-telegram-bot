@@ -5,6 +5,7 @@ from datetime import datetime
 from controller.statistic_controller import StatisticController
 from service.time_service import TimeService
 from repo.event_repo import EventRepo
+from repo.group_repo import GroupRepo
 from entity.event import Event
 
 
@@ -80,8 +81,10 @@ class EventService:
         hours += int(time / 100) - hours
         minute = time - (hours * 100)
 
+        group = GroupRepo.get_or_none(group_id)
+
         given_start_time = datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5)
-        start_time_tz = TimeService.datetime_apply_tz(given_start_time)
+        start_time_tz = TimeService.datetime_apply_tz(given_start_time, group.timezone)
         server_diff_to_utc = (datetime.now() - datetime.utcnow())
         temp = (start_time_tz + server_diff_to_utc)
         server_start_time = (temp - start_time_tz.utcoffset())

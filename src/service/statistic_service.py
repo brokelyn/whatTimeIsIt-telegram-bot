@@ -38,11 +38,11 @@ class StatisticService:
 
         user_score_dict = StatisticService.extract_scores_from_statistic(stat)
 
-        curr_date = int(TimeService.datetime_correct_tz(messages[0].time).strftime('%Y%m%d'))
+        curr_date = int(TimeService.datetime_correct_tz(messages[0].time, stat.group.timezone).strftime('%Y%m%d'))
         last_user_list = []
 
         for msg in messages:
-            time_tz = TimeService.datetime_correct_tz(msg.time)
+            time_tz = TimeService.datetime_correct_tz(msg.time, stat.group.timezone)
             msg_date: int = int(time_tz.strftime('%Y%m%d'))
             msg_time: int = int(time_tz.strftime('%H%M'))
 
