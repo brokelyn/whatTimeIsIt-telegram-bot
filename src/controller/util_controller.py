@@ -130,5 +130,9 @@ class UtilController:
         if group.violation_action == "ban":
             UtilController.ban_action(context, restrict_duration, group, msg)
 
-        elif group.violation_action == 'permission':
+        elif group.violation_action == "permission":
             UtilController.permission_action(context, restrict_duration, msg)
+
+        elif group.violation_action == "none":
+            context.bot.send_message(msg.chat.id,
+                                     text="Punishement is disabled!")
