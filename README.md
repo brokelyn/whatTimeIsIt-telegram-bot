@@ -33,13 +33,13 @@ a private chat, the bot will notify you.
 
 Use the `/settings` command to get an overview over settings for the group.
 
-1. `Violation Action` this will be the action when a user posts a wrong time
+- `Violation Action` this will be the action when a user posts a wrong time
   1. `ban` the user will be removed from the group and can join by an invite link
   2. `permission` the user will not be able to interact with the group except of reading messages
   3. `none` no punishment for the user, but wrong times will be mentioned by the bot
-2. `Timezone` by clicking on that button the timezone of the group can be changed
-3. `Auto Events` when a user posts a time the according statistic will be printed one minute later
-4. `Show Invite Link` this will display the current group invite link
+- `Timezone` by clicking on that button the timezone of the group can be changed
+- `Auto Events` when a user posts a time the according statistic will be printed one minute later
+- `Show Invite Link` this will display the current group invite link
 
 #### Events
 
