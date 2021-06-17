@@ -63,7 +63,7 @@ class GroupController:
             text = "Select a new timezone: \n"
 
         elif command == "set_timezone":
-            group = GroupService.set_timezone(group_id, query_sections[2])
+            group = GroupService.set_timezone(group_id, query_sections[2], context.job_queue)
             keyboard = GroupService.group_settings_keyboard(group)
 
         update.callback_query.message.edit_text(text=text,
