@@ -42,8 +42,11 @@ class StatisticController:
 
     @staticmethod
     def stats_by_job(context):
-        text = StatisticService.stats_to_time(int(context.job.name))
-        context.bot.send_message(chat_id=context.job.context,
+        stat_time = int(context.job.name.split("/")[0])
+        group_id = context.job.context
+
+        text = StatisticService.stats_to_time(group_id, stat_time)
+        context.bot.send_message(chat_id=group_id,
                                  text=text, parse_mode="Markdown",
                                  reply_markup=telegram.ReplyKeyboardRemove())
 

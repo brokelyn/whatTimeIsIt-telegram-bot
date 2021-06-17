@@ -83,13 +83,11 @@ class EventService:
 
         group = GroupRepo.get_or_none(group_id)
 
-        given_start_time = datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5)
-        start_time_tz = TimeService.datetime_apply_tz(given_start_time, group.timezone)
-        server_diff_to_utc = (datetime.now() - datetime.utcnow())
-        temp = (start_time_tz + server_diff_to_utc)
-        server_start_time = (temp - start_time_tz.utcoffset())
-        server_start_time = server_start_time.replace(microsecond=0, tzinfo=None)
+        start_time = datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5)
+        start_time_tz = TimeService.datetime_apply_tz(start_time, group.timezone)
 
         job_name = EventService.create_job_name(group_id, time)
+
         job_queue.run_repeating(StatisticController.stats_by_job, interval=86400,
-                                first=server_start_time.time(), context=group_id, name=job_name)
+                                first=start_time_tz, context=group_id,
+                                name=job_name)
