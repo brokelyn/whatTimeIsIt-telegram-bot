@@ -3,7 +3,7 @@ import pytz
 
 from entity.group import Group
 from repo.group_repo import GroupRepo
-from service.event_service import EventService
+import service.event_service as EventService
 
 
 def group_settings_keyboard(group: Group) -> InlineKeyboardMarkup:
@@ -15,6 +15,10 @@ def group_settings_keyboard(group: Group) -> InlineKeyboardMarkup:
 
     text = "Timezone:  " + group.timezone
     callback_data = "settings select_timezone"
+    keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
+
+    text = "Auto Events:  " + str(group.auto_events)
+    callback_data = "settings auto_events"
     keyboard.append([InlineKeyboardButton(text, callback_data=callback_data)])
 
     text = "Show Invite Link"
@@ -72,6 +76,13 @@ def change_violation_action(group_id: int) -> Group:
         group.violation_action = "none"
     elif group.violation_action == "none":
         group.violation_action = "ban"
+
+    GroupRepo.save(group)
+    return group
+
+def change_auto_events(group_id: int) -> Group:
+    group = GroupRepo.get_or_none(group_id)
+    group.auto_events = not group.auto_events
 
     GroupRepo.save(group)
     return group

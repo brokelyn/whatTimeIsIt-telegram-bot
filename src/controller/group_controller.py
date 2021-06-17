@@ -62,6 +62,10 @@ class GroupController:
                 keyboard = GroupService.timezone_keyboard()
             text = "Select a new timezone: \n"
 
+        elif command == "auto_events":
+            group = GroupService.change_auto_events(group_id)
+            keyboard = GroupService.group_settings_keyboard(group)
+
         elif command == "set_timezone":
             group = GroupService.set_timezone(group_id, query_sections[2], context.job_queue)
             keyboard = GroupService.group_settings_keyboard(group)

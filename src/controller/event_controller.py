@@ -3,7 +3,7 @@ from telegram import InlineKeyboardMarkup
 
 import service.util_service as UtilService
 from service.time_service import TimeService
-from service.event_service import EventService
+import service.event_service as EventService
 
 
 class EventController:
@@ -32,7 +32,7 @@ class EventController:
 
     @staticmethod
     def add_job(update, context, time: int):
-        if EventService.is_event_already_active(update, context, time):
+        if EventService.is_event_already_active(context.job_queue, update.message.chat_id, time):
             context.bot.send_message(chat_id=update.message.chat_id,
                                      text="The event " + str(time) + " already exists",
                                      reply_markup=telegram.ReplyKeyboardRemove())
@@ -85,7 +85,7 @@ class EventController:
         if UtilService.is_private_chat(update.message, context.bot):
             return
 
-        active_jobs = EventService.active_jobs(context.job_queue, update.message.chat_id)
+        active_jobs = EventService.list_active_jobs(context.job_queue, update.message.chat_id)
         if len(active_jobs) == 0:
             context.bot.send_message(chat_id=update.message.chat_id, text="There are no active events")
         else:
