@@ -11,11 +11,13 @@ interact with the group.
 
 # Messenger Bot
 
-## Counting
+## Features
 
-Because counting the scores is a boring task a bot should do this.
-The bot can count score for multiple groups and users at once. Users
-can be in multiple groups as well.
+- Counting every time of the day
+- Support multiple Groups
+- multiple timezones
+- different punishments
+- scheduled statistics posting
 
 ## Usage
 
