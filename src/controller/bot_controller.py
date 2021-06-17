@@ -9,7 +9,7 @@ from controller.statistic_controller import StatisticController
 from controller.group_controller import GroupController
 from controller.util_controller import UtilController
 from repo.event_repo import EventRepo
-from service.event_service import EventService
+import service.event_service as EventService
 
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -79,12 +79,13 @@ class BotController:
     @staticmethod
     def help(update, context):
         help_page = "<b>WhatTimeIsIt Bot Help Page</b>\n\n"
-        help_page += "-'/help' to show this help\n"
-        help_page += "-'/stats :time:' to show stats for time\n"
-        help_page += "-'/events' to show all daily posted stats\n"
-        help_page += "-'/time' and reply a message to see its timestamp\n"
-        help_page += "-'/add_event :time:' to add an event at time\n"
-        help_page += "-'/remove_event' to remove a active event\n\n"
+        help_page += "'/help' to show this help\n"
+        help_page += "'/stats :time:' to show stats for time\n"
+        help_page += "'/events' to show all daily posted stats\n"
+        help_page += "'/time' and reply a message to see its timestamp\n"
+        help_page += "'/add_event :time:' to add an event at time\n"
+        help_page += "'/remove_event' to remove a active event\n"
+        help_page += "'/settings' to edit the group game settings\n\n"
         help_page += "All text messages will be saved for analysing the scores. By participating"
         help_page += "in this group you accept this condition.\n\n"
         # help_page += "Check out the [Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot) framework"

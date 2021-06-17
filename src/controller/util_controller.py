@@ -10,6 +10,7 @@ from repo.message_repo import MessageRepo
 from repo.user_repo import UserRepo
 from repo.group_repo import GroupRepo
 from service.time_service import TimeService
+import service.event_service as EventService
 
 
 class UtilController:
@@ -27,7 +28,8 @@ class UtilController:
                 if msg_text_time == int(msg_datetime):
                     if not MessageRepo.sameTimeSameUserMessageExists(msg):
                         UtilController.persist_message(msg)
-
+                    if group.auto_events:
+                        EventService.create_job(context.job_queue, group.id,msg_text_time, True)
                 else:
                     UtilController.wrong_time_action(update, context)
 
