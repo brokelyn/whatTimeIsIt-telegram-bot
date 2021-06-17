@@ -3,6 +3,7 @@ import pytz
 
 from entity.group import Group
 from repo.group_repo import GroupRepo
+from service.event_service import EventService
 
 
 def group_settings_keyboard(group: Group) -> InlineKeyboardMarkup:
@@ -75,8 +76,11 @@ def change_violation_action(group_id: int) -> Group:
     GroupRepo.save(group)
     return group
 
-def set_timezone(group_id: int, timezone: str) -> Group:
+def set_timezone(group_id: int, timezone: str, job_queue) -> Group:
     group = GroupRepo.get_or_none(group_id)
+
+    # timezones dont match anymore so remove all events
+    EventService.remove_all_group_events(job_queue, group_id)
 
     group.timezone = timezone
     GroupRepo.save(group)
