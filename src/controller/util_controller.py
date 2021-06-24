@@ -55,12 +55,17 @@ class UtilController:
     def message_time(update, context):
         rpl_msg = update.message.reply_to_message
         group = GroupRepo.get_or_none(rpl_msg.chat.id)
+        if group is None:
+            timezone = "UTC"
+        else:
+            timezone = group.timezone
+
         if rpl_msg:
-            msg_time = TimeService.datetime_correct_tz(rpl_msg.date, group.timezone)
+            msg_time = TimeService.datetime_correct_tz(rpl_msg.date, timezone)
             rpl_msg.reply_text("Timestamp of this message is:\n" +
                                msg_time.strftime('%H:%M:%S at %d.%m.%Y'))
         else:
-            update.message.reply_text("Please reply to a message to see its timestamp")
+            update.message.reply_text("Please reply to a message to see it's timestamp")
 
     @staticmethod
     def ban_action(context, restrict_duration: timedelta, group: Group, msg):
