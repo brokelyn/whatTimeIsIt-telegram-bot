@@ -19,7 +19,7 @@ class StatisticController:
             chat_id = update.message.chat_id
             if update.message.chat.type == 'private':
                 GroupController.group_selection(context.bot, chat_id, "stats", str(time))
-            elif StatisticController.time_check(context.bot, chat_id, time):
+            elif StatisticController.time_check(context.bot, chat_id, chat_id, time):
                 board_text = StatisticService.stats_to_time(chat_id, time)
 
                 context.bot.send_message(chat_id=chat_id,
@@ -31,10 +31,11 @@ class StatisticController:
     @staticmethod
     def stats_to_callback(update, context):
         stat_time = update.callback_query.data.split(" ")[2]
+        chat_id = update.callback_query.message.chat.id
         group_id = update.callback_query.data.split(" ")[3]
         group = GroupRepo.get_or_none(group_id)
 
-        if StatisticController.time_check(context.bot, group_id, stat_time):
+        if StatisticController.time_check(context.bot, group_id, chat_id, stat_time):
             board_text = StatisticService.stats_to_time(int(group_id), int(stat_time))
             board_text = "Group: *" + group.title + "*\n\n" + board_text
             update.callback_query.message.edit_text(text=board_text,
@@ -56,8 +57,8 @@ class StatisticController:
     ####################################################################################################################
 
     @staticmethod
-    def time_check(bot, reply_chat_id, time) -> bool:
-        group = GroupRepo.get_or_none(reply_chat_id)
+    def time_check(bot, group_id, reply_chat_id, time) -> bool:
+        group = GroupRepo.get_or_none(group_id)
         current_time = TimeService.datetime_correct_tz(datetime.utcnow(), group.timezone)
         is_same_time = current_time.strftime("%H%M") == str(time)
 
