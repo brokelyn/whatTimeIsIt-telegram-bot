@@ -17,28 +17,31 @@ class StatisticController:
         else:
             time = TimeService.is_valid_time(context.args[0])
             chat_id = update.message.chat_id
-            if StatisticController.time_check(context.bot, chat_id, time):
-                if update.message.chat.type == 'private':
-                    GroupController.group_selection(context.bot, chat_id, "stats", str(time))
-                else:
-                    board_text = StatisticService.stats_to_time(chat_id, time)
+            if update.message.chat.type == 'private':
+                GroupController.group_selection(context.bot, chat_id, "stats", str(time))
+            elif StatisticController.time_check(context.bot, chat_id, time):
+                board_text = StatisticService.stats_to_time(chat_id, time)
 
-                    context.bot.send_message(chat_id=chat_id,
-                                             text=board_text, parse_mode="Markdown",
-                                             reply_markup=telegram.ReplyKeyboardRemove())
+                context.bot.send_message(chat_id=chat_id,
+                                         text=board_text,
+                                         parse_mode="Markdown",
+                                         reply_markup=telegram.ReplyKeyboardRemove())
 
-    ####################################################################################################################
+    ###########################################################################
     @staticmethod
     def stats_to_callback(update, context):
         stat_time = update.callback_query.data.split(" ")[2]
         group_id = update.callback_query.data.split(" ")[3]
         group = GroupRepo.get_or_none(group_id)
 
-        board_text = StatisticService.stats_to_time(int(group_id), int(stat_time))
-        board_text = "Group: *" + group.title + "*\n\n" + board_text
-        update.callback_query.message.edit_text(text=board_text, parse_mode="Markdown",
-                                                reply_markup=InlineKeyboardMarkup([]))
-    ####################################################################################################################
+        if StatisticController.time_check(context.bot, group_id, stat_time):
+            board_text = StatisticService.stats_to_time(int(group_id), int(stat_time))
+            board_text = "Group: *" + group.title + "*\n\n" + board_text
+            update.callback_query.message.edit_text(text=board_text,
+                                                    parse_mode="Markdown",
+                                                    reply_markup=None)
+
+    ###########################################################################
 
     @staticmethod
     def stats_by_job(context):
