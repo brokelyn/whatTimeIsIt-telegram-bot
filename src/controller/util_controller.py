@@ -101,14 +101,7 @@ class UtilController:
     async def permission_action(context, restrict_duration: timedelta, msg):
         try:
             permissions = telegram.ChatPermissions()
-            permissions.can_send_polls = False
-            permissions.can_add_web_page_previews = False
-            permissions.can_change_info = False
-            permissions.can_invite_users = False
-            permissions.can_pin_messages = False
-            permissions.can_send_media_messages = False
-            permissions.can_send_messages = False
-            permissions.can_send_other_messages = False
+            permissions.no_permissions()
 
             await context.bot.send_message(msg.chat.id, text="Your rights will be removed for "
                                                        + str(restrict_duration) + "!")
