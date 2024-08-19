@@ -52,6 +52,9 @@ class GroupController:
             keyboard = GroupService.group_settings_keyboard(group)
 
         elif command == "invite_link":
+            if group.invite_link is None:
+                group.invite_link = await context.bot.export_chat_invite_link(group_id)
+                GroupRepo.save(group)
             text = "Group invite link: " + group.invite_link
             keyboard = None
 
