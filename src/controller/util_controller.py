@@ -16,7 +16,7 @@ import service.event_service as EventService
 class UtilController:
 
     @staticmethod
-    def handle_text_msg(update, context):
+    async def handle_text_msg(update, context):
         msg = update.message
 
         if msg.chat.type != 'private':
@@ -31,7 +31,7 @@ class UtilController:
                     if group.auto_events:
                         EventService.create_job(context.job_queue, group.id,msg_text_time, True)
                 else:
-                    UtilController.wrong_time_action(update, context)
+                    await UtilController.wrong_time_action(update, context)
 
     @staticmethod
     def persist_message(msg):
@@ -52,7 +52,7 @@ class UtilController:
         MessageRepo.create(message)
 
     @staticmethod
-    def message_time(update, context):
+    async def message_time(update, context):
         rpl_msg = update.message.reply_to_message
         group = GroupRepo.get_or_none(rpl_msg.chat.id)
         if group is None:
@@ -62,43 +62,43 @@ class UtilController:
 
         if rpl_msg:
             msg_time = TimeService.datetime_correct_tz(rpl_msg.date, timezone)
-            rpl_msg.reply_text("Timestamp of this message is:\n" +
+            await rpl_msg.reply_text("Timestamp of this message is:\n" +
                                msg_time.strftime('%H:%M:%S at %d.%m.%Y'))
         else:
             update.message.reply_text("Please reply to a message to see it's timestamp")
 
     @staticmethod
-    def ban_action(context, restrict_duration: timedelta, group: Group, msg):
+    async def ban_action(context, restrict_duration: timedelta, group: Group, msg):
         try:
             if not group.invite_link:
-                group.invite_link = context.bot.export_chat_invite_link(msg.chat.id)
+                group.invite_link = await context.bot.export_chat_invite_link(msg.chat.id)
                 GroupRepo.save(group)
 
             ban_text = "Your ban will last for " + str(restrict_duration) + \
                     "\n\nUse this link " + group.invite_link + \
                     " to join after your ban has expired."
 
-            send_msg = context.bot.send_message(chat_id=msg.chat.id,
+            send_msg = await context.bot.send_message(chat_id=msg.chat.id,
                                                 text=ban_text + "\n\nYou will be banned in 21 seconds")
             time.sleep(1)
 
             for i in range(20, 5, -5):
-                context.bot.edit_message_text(chat_id=msg.chat.id,
+                await context.bot.edit_message_text(chat_id=msg.chat.id,
                                             message_id=send_msg.message_id,
                                             text=ban_text + "\n\nYou will be banned in " + str(i) + " seconds")
                 time.sleep(5)  # dont update too often due to flood protection
 
-            context.bot.edit_message_text(chat_id=msg.chat.id, message_id=send_msg.message_id, text=ban_text)
+            await context.bot.edit_message_text(chat_id=msg.chat.id, message_id=send_msg.message_id, text=ban_text)
 
-            context.bot.kick_chat_member(chat_id=msg.chat.id,
+            await context.bot.kick_chat_member(chat_id=msg.chat.id,
                                         user_id=msg.from_user.id,
                                         until_date=restrict_duration.total_seconds())
 
         except telegram.error.BadRequest:
-            context.bot.send_message(msg.chat.id, text="Not enough rights to ban group member")
+            await context.bot.send_message(msg.chat.id, text="Not enough rights to ban group member")
 
     @staticmethod
-    def permission_action(context, restrict_duration: timedelta, msg):
+    async def permission_action(context, restrict_duration: timedelta, msg):
         try:
             permissions = telegram.ChatPermissions()
             permissions.can_send_polls = False
@@ -110,27 +110,27 @@ class UtilController:
             permissions.can_send_messages = False
             permissions.can_send_other_messages = False
 
-            context.bot.send_message(msg.chat.id, text="Your rights will be removed for "
+            await context.bot.send_message(msg.chat.id, text="Your rights will be removed for "
                                                        + str(restrict_duration) + "!")
 
             time.sleep(1)
 
             unban_date = datetime.datetime.utcnow() + restrict_duration
 
-            context.bot.restrict_chat_member(chat_id=msg.chat.id,
+            await context.bot.restrict_chat_member(chat_id=msg.chat.id,
                                              user_id=msg.from_user.id,
                                              until_date=unban_date,
                                              permissions=permissions)
 
         except telegram.error.BadRequest:
-            context.bot.send_message(msg.chat.id, text="Not enough rights to restrict permission of group member")
+            await context.bot.send_message(msg.chat.id, text="Not enough rights to restrict permission of group member")
 
     @staticmethod
-    def wrong_time_action(update, context):
+    async def wrong_time_action(update, context):
         msg = update.message
         group = GroupRepo.get_or_create(msg.chat.id, msg.chat.title)
         msg_ts_corrected = TimeService.datetime_correct_tz(msg.date, group.timezone)
-        msg.reply_text("The time '" + str(msg.text) + "' is wrong from " +
+        await msg.reply_text("The time '" + str(msg.text) + "' is wrong from " +
                        msg.from_user.first_name + ".\n" + "Message timestamp:  "
                        + msg_ts_corrected.strftime('%H:%M:%S'))
 
@@ -143,5 +143,5 @@ class UtilController:
             UtilController.permission_action(context, restrict_duration, msg)
 
         elif group.violation_action == "none":
-            context.bot.send_message(msg.chat.id,
-                                     text="Punishement is disabled!")
+            await context.bot.send_message(msg.chat.id,
+                                     text="Lucky you! Punishement is disabled!")

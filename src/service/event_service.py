@@ -1,6 +1,6 @@
 from typing import List
-from telegram import InlineKeyboardButton
 from datetime import datetime
+import telegram
 
 from controller.statistic_controller import StatisticController
 from service.time_service import TimeService
@@ -35,17 +35,17 @@ def remove_all_group_events(job_queue, group_id: int):
         job.schedule_removal()
 
 
-def rmv_event_keyboard(job_queue, group_id: int) -> List[List[InlineKeyboardButton]]:
+def rmv_event_keyboard(job_queue, group_id: int) -> List[List[telegram.InlineKeyboardButton]]:
     active_jobs = list_active_jobs(job_queue, group_id)
 
     keyboard = list()
     for job in active_jobs:
         job_event_time = job.name.split('/')[0]
-        option = [InlineKeyboardButton("Remove " + job_event_time, callback_data="rmv_event " + job_event_time)]
+        option = [telegram.InlineKeyboardButton("Remove " + job_event_time, callback_data="rmv_event " + job_event_time)]
         keyboard.append(option)
 
     if len(active_jobs) > 1:
-        keyboard.append([InlineKeyboardButton("Remove all events", callback_data="rmv_event_all")])
+        keyboard.append([telegram.InlineKeyboardButton("Remove all events", callback_data="rmv_event_all")])
 
     return keyboard
 
@@ -94,9 +94,9 @@ def create_job(job_queue, group_id, time: int, onetime=False):
     if onetime and not is_job_already_active(job_queue, group_id, time):
         job_queue.run_once(StatisticController.stats_by_job,
                            when=start_time_tz,
-                           context=group_id,
+                           chat_id=group_id,
                            name=job_name)
     elif not is_job_already_active(job_queue, group_id, time):
         job_queue.run_repeating(StatisticController.stats_by_job, interval=86400,
-                                first=start_time_tz, context=group_id,
+                                first=start_time_tz, chat_id=group_id,
                                 name=job_name)

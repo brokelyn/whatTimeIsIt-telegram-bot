@@ -2,6 +2,6 @@
 class ScoreController:
 
     @staticmethod
-    def score(update, context):
-        context.bot.send_message(chat_id=update.message.chat_id,
+    async def score(update, context):
+        await context.bot.send_message(chat_id=update.message.chat.id,
                                  text="Not supported yet")

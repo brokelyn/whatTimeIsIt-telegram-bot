@@ -1,5 +1,4 @@
 import telegram
-from telegram import InlineKeyboardMarkup
 
 import service.util_service as UtilService
 from service.time_service import TimeService
@@ -9,63 +8,63 @@ import service.event_service as EventService
 class EventController:
 
     @staticmethod
-    def add_event(update, context):
+    async def add_event(update, context):
         if UtilService.is_private_chat(update.message, context.bot):
             return
 
         if len(context.args) <= 0:
-            EventController.add_keyboard(update, context)
+            await EventController.add_keyboard(update, context)
         else:
             time = TimeService.is_valid_time(context.args[0])
             if time != -1:
-                EventController.add_job(update, context, time)
+                await EventController.add_job(update, context, time)
             else:
-                context.bot.send_message(chat_id=update.message.chat_id,
+                await context.bot.send_message(chat_id=update.message.chat.id,
                                          text="Time request is invalid")
 
     @staticmethod
-    def add_keyboard(update, context):
+    async def add_keyboard(update, context):
         custom_keyboard = [['/add_event 1337', '/add_event 0'], ['/add_event 1111', '/add_event 2222']]
-        context.bot.send_message(chat_id=update.message.chat_id,
+        await context.bot.send_message(chat_id=update.message.chat.id,
                                  text="Choose event or request a custom by '/add_event <4 numbers>'",
                                  reply_markup=telegram.ReplyKeyboardMarkup(custom_keyboard))
 
     @staticmethod
-    def add_job(update, context, time: int):
-        if EventService.is_event_already_active(context.job_queue, update.message.chat_id, time):
-            context.bot.send_message(chat_id=update.message.chat_id,
+    async def add_job(update, context, time: int):
+        if EventService.is_event_already_active(context.job_queue, update.message.chat.id, time):
+            await context.bot.send_message(chat_id=update.message.chat.id,
                                      text="The event " + str(time) + " already exists",
                                      reply_markup=telegram.ReplyKeyboardRemove())
         else:
-            EventService.create_event(context.job_queue, update.message.chat_id, time)
+            EventService.create_event(context.job_queue, update.message.chat.id, time)
 
-            context.bot.send_message(chat_id=update.message.chat_id,
+            await context.bot.send_message(chat_id=update.message.chat.id,
                                      text="Added event '" + str(time) + "'",
                                      reply_markup=telegram.ReplyKeyboardRemove())
 
     ####################################################################################
 
     @staticmethod
-    def remove_event(update, context):
+    async def remove_event(update, context):
         if UtilService.is_private_chat(update.message, context.bot):
             return
 
-        keyboard = EventService.rmv_event_keyboard(context.job_queue, update.message.chat_id)
+        keyboard = EventService.rmv_event_keyboard(context.job_queue, update.message.chat.id)
         if len(keyboard) == 0:
-            context.bot.send_message(chat_id=update.message.chat_id,
+            await context.bot.send_message(chat_id=update.message.chat.id,
                                      text="There are no active events")
         else:
-            context.bot.send_message(chat_id=update.message.chat_id,
+            await context.bot.send_message(chat_id=update.message.chat.id,
                                      text="Choose one of the following:",
-                                     reply_markup=InlineKeyboardMarkup(keyboard))
+                                     reply_markup=telegram.InlineKeyboardMarkup(keyboard))
 
     @staticmethod
-    def rmv_event_callback(update, context):
+    async def rmv_event_callback(update, context):
         group_id = update.callback_query.message.chat.id
 
         if update.callback_query.data == "rmv_event_all":
             EventService.remove_all_group_events(context.job_queue, group_id)
-            update.callback_query.message.edit_text(text="All events removed.")
+            await update.callback_query.message.edit_text(text="All events removed.")
         elif "rmv_event" in update.callback_query.data:
             event_name = update.callback_query.data.split(" ")[1]
             EventService.remove_group_event(context.job_queue, group_id, event_name)
@@ -75,24 +74,24 @@ class EventController:
             if len(keyboard) == 0:
                 text += '\n\nNo more events left!'
 
-            update.callback_query.message.edit_text(text=text,
-                                                    reply_markup=InlineKeyboardMarkup(keyboard))
+            await update.callback_query.message.edit_text(text=text,
+                                                    reply_markup=telegram.InlineKeyboardMarkup(keyboard))
 
     ####################################################################################
 
     @staticmethod
-    def events(update, context):
+    async def events(update, context):
         if UtilService.is_private_chat(update.message, context.bot):
             return
 
-        active_jobs = EventService.list_active_jobs(context.job_queue, update.message.chat_id)
+        active_jobs = EventService.list_active_jobs(context.job_queue, update.message.chat.id)
         if len(active_jobs) == 0:
-            context.bot.send_message(chat_id=update.message.chat_id, text="There are no active events")
+            await context.bot.send_message(chat_id=update.message.chat.id, text="There are no active events")
         else:
             reply = "*This events are active:*\n\n"
             for job in active_jobs:
                 job_time = job.name.split("/")[0]
                 reply += "Event @ " + job_time + "\n"
 
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text=reply, parse_mode=telegram.ParseMode.MARKDOWN)
+            await context.bot.send_message(chat_id=update.message.chat.id,
+                                     text=reply, parse_mode=telegram.constants.ParseMode.MARKDOWN)

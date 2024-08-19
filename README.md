@@ -51,7 +51,7 @@ Events can be active while `Auto Events` is enabled.
 There are a few commands to handle those events:
 
 - `/add_event <4 numbers>` the command will a an event to the time given as parameter
-- `/remove_event` will display a inline keyboard where active events can be removed  
+- `/remove_event` will display a inline keyboard where active events can be removed
 - `/events` will list every active event
 
 #### Other
@@ -81,7 +81,7 @@ This application uses some external libraries which can be found in the
 with pip. The basic command is `pip3 install -r requirements.txt` After
 pip finishes his work you need to set some environment variables.
 
-1. Your bot api key should be named: `BOT_API_KEY=`
+1. Your bot api key should be named: `TELEGRAM_BOT_API_KEY=`
 2. A SQLite file reference with an absolute path : `SQLITE_FILE=`
 3. Or a database url if you use an external db: `DATABASE_URL=`
 
