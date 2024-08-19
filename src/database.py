@@ -13,7 +13,7 @@ def connect_db():
         url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
         db = peewee.PostgresqlDatabase(database=url.path[1:], user=url.username,
                                        password=url.password, host=url.hostname,
-                                       port=url.port, sslmode="require",
+                                       port=url.port, sslmode="disable",
                                        autorollback=True, autocommit=True)
         print("Postgres database active")
     else:
