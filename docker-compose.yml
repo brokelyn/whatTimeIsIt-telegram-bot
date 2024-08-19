@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    environment:
+      TELEGRAM_BOT_API_KEY: ${TELEGRAM_BOT_API_KEY}
+      DATABASE_URL: postgres://postgres:whatTimeIsIt1337@db:5432/whatTimeIsItDatabase
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+    command: ["python", "./src/main.py"]
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: whatTimeIsIt1337
+      POSTGRES_DB: whatTimeIsItDatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Expose PostgreSQL to the local network
+
+volumes:
+  postgres_data:
