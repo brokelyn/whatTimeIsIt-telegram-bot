@@ -6,14 +6,35 @@ from datetime import timedelta
 from entity.message import Message
 from entity.user import User
 from entity.group import Group
+from entity.score import Score
 from repo.message_repo import MessageRepo
 from repo.user_repo import UserRepo
 from repo.group_repo import GroupRepo
+from repo.statistic_repo import StatisticRepo
+from repo.score_repo import ScoreRepo
 from service.time_service import TimeService
 import service.event_service as EventService
 
 
 class UtilController:
+
+    @staticmethod
+    def format_timedelta(duration: timedelta) -> str:
+        """Format a timedelta as 'Xh Ym Zs' format."""
+        total_seconds = int(duration.total_seconds())
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        
+        parts = []
+        if hours > 0:
+            parts.append(f"{hours}h")
+        if minutes > 0:
+            parts.append(f"{minutes}m")
+        if seconds > 0 or len(parts) == 0:
+            parts.append(f"{seconds}s")
+        
+        return " ".join(parts)
 
     @staticmethod
     async def handle_text_msg(update, context):
@@ -74,7 +95,8 @@ class UtilController:
                 group.invite_link = await context.bot.export_chat_invite_link(msg.chat.id)
                 GroupRepo.save(group)
 
-            ban_text = "Your ban will last for " + str(restrict_duration) + \
+            duration_str = UtilController.format_timedelta(restrict_duration)
+            ban_text = "Your ban will last for " + duration_str + \
                     "\n\nUse this link " + group.invite_link + \
                     " to join after your ban has expired."
 
@@ -90,7 +112,7 @@ class UtilController:
 
             await context.bot.edit_message_text(chat_id=msg.chat.id, message_id=send_msg.message_id, text=ban_text)
 
-            await context.bot.kick_chat_member(chat_id=msg.chat.id,
+            await context.bot.ban_chat_member(chat_id=msg.chat.id,
                                         user_id=msg.from_user.id,
                                         until_date=restrict_duration.total_seconds())
 
@@ -103,8 +125,9 @@ class UtilController:
             permissions = telegram.ChatPermissions()
             permissions.no_permissions()
 
+            duration_str = UtilController.format_timedelta(restrict_duration)
             await context.bot.send_message(msg.chat.id, text="Your rights will be removed for "
-                                                       + str(restrict_duration) + "!")
+                                                       + duration_str + "!")
 
             time.sleep(1)
 
@@ -117,6 +140,50 @@ class UtilController:
 
         except telegram.error.BadRequest:
             await context.bot.send_message(msg.chat.id, text="Not enough rights to restrict permission of group member")
+
+    @staticmethod
+    async def minus_point_action(context, group: Group, msg):
+        msg_text_time = TimeService.is_valid_time(msg.text)
+        msg_ts_corrected = TimeService.datetime_correct_tz(msg.date, group.timezone)
+        msg_date = int(msg_ts_corrected.strftime('%Y%m%d'))
+
+        # Get or create statistic and score
+        statistic = StatisticRepo.get_or_create(group.id, msg_text_time)
+
+        # Get existing score or create new one
+        existing_scores = ScoreRepo.scores_to_stat(statistic)
+        user_score = None
+        for score in existing_scores:
+            if score.user.id == msg.from_user.id:
+                user_score = score
+                break
+
+        if user_score is None:
+            user = User(id=msg.from_user.id, username=msg.from_user.username,
+                       first_name=msg.from_user.first_name,
+                       last_name=msg.from_user.last_name)
+            UserRepo.create_if_not_exist(user)
+            user_score = Score(user=user.id, stat=statistic, points=0, date=0)
+
+        # Apply penalty every time
+        old_points = user_score.points
+        user_score.points = max(0, user_score.points - 1)
+        user_score.date = msg_date
+        ScoreRepo.save(user_score)
+
+        if old_points == 0:
+            penalty_text = ("The time *" + str(msg.text) + "* is wrong from *" +
+                          msg.from_user.first_name + "*.\n" +
+                          "Message timestamp: *" + msg_ts_corrected.strftime('%H:%M:%S') + "* \n\n" +
+                          "You already have 0 points, can't go lower!")
+        else:
+            penalty_text = ("The time *" + str(msg.text) + "* is wrong from *" +
+                          msg.from_user.first_name + "*.\n" +
+                          "Message timestamp: *" + msg_ts_corrected.strftime('%H:%M:%S') + "* \n\n" +
+                          "New score for time *" + str(msg_text_time) + "*: " +
+                          str(old_points) + " - 1 = " + str(user_score.points) + " points")
+
+        await context.bot.send_message(msg.chat.id, text=penalty_text, parse_mode=telegram.constants.ParseMode.MARKDOWN)
 
     @staticmethod
     async def wrong_time_action(update, context):
@@ -134,6 +201,9 @@ class UtilController:
 
         elif group.violation_action == "permission":
             await UtilController.permission_action(context, restrict_duration, msg)
+
+        elif group.violation_action == "minus_point":
+            await UtilController.minus_point_action(context, group, msg)
 
         elif group.violation_action == "none":
             await context.bot.send_message(msg.chat.id,

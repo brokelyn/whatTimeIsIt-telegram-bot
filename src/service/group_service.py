@@ -73,6 +73,8 @@ def change_violation_action(group_id: int) -> Group:
     if group.violation_action == "ban":
         group.violation_action = "permission"
     elif group.violation_action == "permission":
+        group.violation_action = "minus_point"
+    elif group.violation_action == "minus_point":
         group.violation_action = "none"
     elif group.violation_action == "none":
         group.violation_action = "ban"
