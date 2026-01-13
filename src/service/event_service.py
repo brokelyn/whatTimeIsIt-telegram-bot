@@ -86,7 +86,7 @@ def create_job(job_queue, group_id, time: int, onetime=False):
 
     group = GroupRepo.get_or_none(group_id)
 
-    start_time = datetime.utcnow().replace(hour=hours, minute=minute + 1, second=5)
+    start_time = datetime.utcnow().replace(hour=hours, minute=(minute + 1) % 60, second=5)
     start_time_tz = TimeService.datetime_apply_tz(start_time, group.timezone)
 
     job_name = create_job_name(group_id, time)
