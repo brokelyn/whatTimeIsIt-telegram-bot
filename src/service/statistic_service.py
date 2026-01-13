@@ -38,37 +38,55 @@ class StatisticService:
 
         user_score_dict = StatisticService.extract_scores_from_statistic(stat)
 
-        curr_date = int(TimeService.datetime_correct_tz(messages[0].time, stat.group.timezone).strftime('%Y%m%d'))
-        last_user_list = []
-
+        # Group messages by day
+        messages_by_day = {}
         for msg in messages:
             time_tz = TimeService.datetime_correct_tz(msg.time, stat.group.timezone)
             msg_date: int = int(time_tz.strftime('%Y%m%d'))
             msg_time: int = int(time_tz.strftime('%H%M'))
 
-            if msg_date != curr_date:
-                if len(last_user_list) > 1:
-                    user_score_dict[last_user_list[-1]].points += 1
-                last_user_list = []
-                curr_date = msg_date
+            # Only process valid messages
+            if msg_time == stat.time and pattern in msg.text:
+                if msg_date not in messages_by_day:
+                    messages_by_day[msg_date] = []
+                messages_by_day[msg_date].append(msg)
 
-            if msg_time == stat.time:
-                if pattern in msg.text:
-                    if msg.user not in user_score_dict:
-                        new_score = Score(user=msg.user, stat=stat)
-                        user_score_dict[msg.user] = new_score
-                    if msg_date > user_score_dict[msg.user].date:
-                        user_score_dict[msg.user].points += 1
-                        user_score_dict[msg.user].date = msg_date
-                        if msg.user not in last_user_list:
-                            last_user_list.append(msg.user)
+        # Process each day
+        for day in sorted(messages_by_day.keys()):
+            daily_messages = messages_by_day[day]
+            users_who_posted_today = []
 
-        if len(last_user_list) > 1:
-            user_score_dict[last_user_list[-1]].points += 1
+            # Award 1 point to each user who posted correctly on this day
+            for msg in daily_messages:
+                user = msg.user
 
+                # Initialize score if user doesn't exist
+                if user not in user_score_dict:
+                    new_score = Score(user=user, stat=stat, points=0, date=0)
+                    user_score_dict[user] = new_score
+
+                # Only award point if this is a new day for this user
+                if day > user_score_dict[user].date and user not in users_who_posted_today:
+                    user_score_dict[user].points += 1
+                    user_score_dict[user].date = day
+
+                    # Track that this user posted today (only count once per user)
+                    if user not in users_who_posted_today:
+                        users_who_posted_today.append(user)
+
+            # Award bonus points for this day
+            if len(users_who_posted_today) == 1:
+                # Solo player gets +1 bonus (2 points total for the day)
+                user_score_dict[users_who_posted_today[0]].points += 1
+            elif len(users_who_posted_today) > 1:
+                # First player gets +1 bonus when multiple players posted
+                user_score_dict[users_who_posted_today[0]].points += 1
+
+        # Save all scores
         for score in user_score_dict.values():
             ScoreRepo.save(score)
 
+        # Update the last processed message ID
         stat.last_msg_id = messages[-1].id
         StatisticRepo.save(stat)
 
